@@ -13,20 +13,21 @@
         echo '<a href="login.php?logout">Выход</a>';
 
     //  } else { //Если мы не авторизированы
-      $logins = $_POST["login"];
-      echo '<form action="" method="post">';
+      
+      echo '<form name="logining" action="" method="POST">';
           echo '<p>Имя пользователя: <input type="text" id="login" name="login" /></p>';
           echo '<p>Пароль: <input type="password" id="password" name="password" /></p>';
           echo '<p>Запомнить меня: <input type="checkbox" name="remember" /></p>';
         //  if(!empty($message)) {;
           echo '<p>'; //echo $message; echo '</p>';
           echo '<p><input type="submit" value="Вход" /></p>';
+          $login = $_POST["login"];
       //  }
       echo '</form>';
   //    }
     echo '</body>';
   echo '</html>';
-  echo $logins;
+  echo $login;
   /* запрос выборки
   $sql = "select firstname from users";
   $result = pg_query($connection, $sql);
