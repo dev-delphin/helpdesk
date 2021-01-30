@@ -9,7 +9,7 @@
 DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users(
 	id SERIAL PRIMARY KEY NOT NULL,
-	firstname VARCHAR(50) NOT NULL,
+	firstname VARCHAR(50) NOT NULL, --login
     email VARCHAR(100),
     pwd VARCHAR(255) NOT NULL,
     privelege INT REFERENCES privelege (id) ON DELETE CASCADE
