@@ -3,38 +3,37 @@
 ----------------------------------------------------------
 -- Табилца users, для указания пола пользователя
 -- "id" уникальный идентификатор 
--- "firstname" имя
+-- "login" имя, логин
 -- "email" почта
 -- "pwd" пароль
 DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users(
 	id SERIAL PRIMARY KEY NOT NULL,
-	firstname VARCHAR(50) NOT NULL, --login
+	login VARCHAR(50) NOT NULL,
     email VARCHAR(100),
     pwd VARCHAR(255) NOT NULL,
-    privelege INT REFERENCES privelege (id) ON DELETE CASCADE
+    privelege INT REFERENCES priveleges (id) ON DELETE CASCADE,
+    description VARCHAR(255)
 );
 --- Default user ---
-INSERT INTO users (id, firstname, pwd, privelege) VALUES (1, 'SuperAdmin', 'helpdesk', 1);
+INSERT INTO users (id, login, pwd, privelege, description) VALUES (1, 'SuperAdmin', 'helpdesk', 1, 'Стандартный пользователь');
 
 ----------------------------------------------------------
 -- Табилца privelege, для указания пола пользователя
 -- "id" уникальный идентификатор 
 -- "privelege" привелегия
 -- "privelegevalue" значение привелегии от 0 - ничего до 5 - максимальное
-DROP TABLE IF EXISTS privelege CASCADE;
-CREATE TABLE privelege(
+DROP TABLE IF EXISTS priveleges CASCADE;
+CREATE TABLE priveleges(
 	id SERIAL PRIMARY KEY NOT NULL,
-	privelege VARCHAR(50) NOT NULL,
+	privelegename VARCHAR(50) NOT NULL,
     privelegevalue INT NOT NULL
 );
 -- defaul priveges --
-INSERT INTO privelege (id, privelege, privelegevalue) VALUES (1, 'СуперАдминистратор', 5);
-INSERT INTO privelege (id, privelege, privelegevalue) VALUES (2, 'Администратор', 4);
-INSERT INTO privelege (id, privelege, privelegevalue) VALUES (3, 'Техник', 3);
-INSERT INTO privelege (id, privelege, privelegevalue) VALUES (4, 'Пользователь', 2);
-INSERT INTO privelege (id, privelege, privelegevalue) VALUES (5, 'Гость', 1);
-INSERT INTO privelege (id, privelege, privelegevalue) VALUES (6, 'Disabled', 0);
+INSERT INTO priveleges (id, privelegename, privelegevalue) VALUES (1, 'СуперАдминистратор', 3);
+INSERT INTO priveleges (id, privelegename, privelegevalue) VALUES (2, 'Администратор', 2);
+INSERT INTO priveleges (id, privelegename, privelegevalue) VALUES (3, 'Техник', 1);
+INSERT INTO priveleges (id, privelegename, privelegevalue) VALUES (6, 'Disabled', 0);
 
 ----------------------------------------------------------
 -- Табилца stage, для указания пола пользователя
