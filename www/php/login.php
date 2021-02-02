@@ -1,9 +1,7 @@
 <?php
     require 'connection.php';
     require 'config.php';
-    include '';
-    include 'superadminpage.html';
-    include 'admin.html';
+    include 'login1.html';
 // Страница авторизации
 
 // Функция для генерации случайной строки
@@ -25,42 +23,41 @@ if(isset($_POST['dologin']))
     if (pg_num_rows($querylogin) > 0) {
         $datapwd = pg_fetch_assoc($querylogin);
     } else {
-        echo "<div class='col-xs-12 col-sm-12 col-md-12 col-xl-12'>
-                <p class='text-center' style='font-size: 25px;'>Неверный логин или пароль</p>
-            </div>";
-        sleep(1);
-        header("Location: ");
-        exit();
+        echo "<div><p class='text-center' style='font-size: 25px;'>Неверный логин или пароль</p></div>";
+        exit;
     }
     //запрос логина если логин верен то запрос пароля иначче еррор
     if($datapwd['pwd'] === $_POST['password']){
         $queryprivege = pg_query($connection,"SELECT priveleges.privelegevalue FROM users JOIN priveleges ON users.privelege=priveleges.id AND 
                                     users.login='".pg_escape_string($connection,$_POST['login'])."' LIMIT 1");
         //$datalogin = pg_fetch_assoc($queryprivege);
-        while ($datalogin = pg_fetch_assoc($queryprivege)) {
-            echo $datalogin['privelegevalue'];
-          }
-        if($datalogin['privelegevalue'] === 3){
-            header("Location: superadminpage.html");
-            exit();
+        if (pg_num_rows($queryprivege) > 0) {
+            $datalogin = pg_fetch_assoc($queryprivege);
+        } else {
+            echo "<div><p class='text-center' style='font-size: 25px;'>Неверный логин или пароль</p></div>";
+            exit;
         }
-        if($datalogin['privelegevalue'] === 2){
-            header("Location: admin.html");
-            exit();
+        if($datalogin['privelegevalue'] == 3){
+            header("Location: ../superadminpage.html");
+            exit;
         }
-        if($datalogin['privelegevalue'] === 1){
-            header("Location: technik.html");
-            exit();
+        if($datalogin['privelegevalue'] == 2){
+            header("Location: ../admin.html");
+            exit;
         }
-        if($datalogin['privelegevalue'] === 0){
-            echo "Ваша учетная запись заблокирована";
-            exit();
+        if($datalogin['privelegevalue'] == 1){
+            header("Location: ../technik.html");
+            exit;
+        }
+        if($datalogin['privelegevalue'] == 0){
+            echo "<div><p class='text-center' style='font-size: 25px;'>Эта учетная запись отключена</p></div>";;
+            exit;
         }
     }   else {
             echo "<div class='col-xs-12 col-sm-12 col-md-12 col-xl-12'>
                     <p class='text-center' style='font-size: 25px;'>Неверный логин или пароль</p>
                 </div>";
-            exit();
+            exit;
         }
 
 
