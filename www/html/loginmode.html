@@ -18,7 +18,7 @@
                     var $form = $(this);
                     $.ajax({
                     type: $form.attr('method'),
-                    url: "php/login.php",
+                    url: "../php/login.php",
                     data: {login: $("#login").val(), pwd: $("#pwd").val()}
                     }).done(function() {
                     }).fail(function() {
