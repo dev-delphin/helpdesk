@@ -37,15 +37,15 @@ if(isset($_POST['dologin']))
             exit;
         }
         if($datalogin['privelegevalue'] == 3){
-            header("Location: ../superadminpage.html");
+            header("Location: ../html/superadminpage.html");
             exit;
         }
         if($datalogin['privelegevalue'] == 2){
-            header("Location: ../admin.html");
+            header("Location: ../html/admin.html");
             exit;
         }
         if($datalogin['privelegevalue'] == 1){
-            header("Location: ../technik.html");
+            header("Location: ../html/technik.html");
             exit;
         }
         if($datalogin['privelegevalue'] == 0){
