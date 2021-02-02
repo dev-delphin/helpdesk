@@ -1,6 +1,6 @@
 <?php
-require 'D:/Programming/Projects/diplom_helpdesk/php/connection.php';
-  include 'D:/Programming/Projects/diplom_helpdesk/php/config.php';
+require 'connection.php';
+  include 'config.php';
 
 if(isset($_POST['submit']))
 {
@@ -18,10 +18,10 @@ if(isset($_POST['submit']))
     }
 
     // проверяем, не сущестует ли пользователя с таким именем
-    $query = pg_query($connection, "SELECT user_id FROM users WHERE user_login='".pg_real_escape_string($connection, $_POST['login'])."'");
+    $query = pg_query($connection, "SELECT user_id FROM users WHERE user_login='".pg_escape_string($connection, $_POST['login'])."'");
     if(pg_num_rows($query) > 0)
     {
-        $err[] = "Пользователь с таким логином уже существует в базе данных";
+        $err[] = "Пользователь с таким логином уже существует";
     }
 
     // Если нет ошибок, то добавляем в БД нового пользователя

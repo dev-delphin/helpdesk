@@ -1,6 +1,9 @@
 <?php
     require 'connection.php';
-    include 'config.php';
+    require 'config.php';
+    include '';
+    include 'superadminpage.html';
+    include 'admin.html';
 // Страница авторизации
 
 // Функция для генерации случайной строки
@@ -13,19 +16,32 @@
     }
     return $code;
 }*/
-$error = "<div><p class='text-center' style='font-size: 25px;'>Неверный логин или пароль</p></div>";
+//$error = "<div><p class='text-center' style='font-size: 25px;'>Неверный логин или пароль</p></div>";
 if(isset($_POST['dologin']))
 {
     // Вытаскиваем из БД запись, у которой логин равняеться введенному
     $querylogin = pg_query($connection,"SELECT pwd FROM users WHERE login='".pg_escape_string($connection,$_POST['login'])."'LIMIT 1");
-    $datapwd = pg_fetch_assoc($querylogin);
+    //$datapwd = pg_fetch_assoc($querylogin);
+    if (pg_num_rows($querylogin) > 0) {
+        $datapwd = pg_fetch_assoc($querylogin);
+    } else {
+        echo "<div class='col-xs-12 col-sm-12 col-md-12 col-xl-12'>
+                <p class='text-center' style='font-size: 25px;'>Неверный логин или пароль</p>
+            </div>";
+        sleep(1);
+        header("Location: ");
+        exit();
+    }
     //запрос логина если логин верен то запрос пароля иначче еррор
     if($datapwd['pwd'] === $_POST['password']){
         $queryprivege = pg_query($connection,"SELECT priveleges.privelegevalue FROM users JOIN priveleges ON users.privelege=priveleges.id AND 
                                     users.login='".pg_escape_string($connection,$_POST['login'])."' LIMIT 1");
-        $datalogin = pg_fetch_assoc($queryprivege);
+        //$datalogin = pg_fetch_assoc($queryprivege);
+        while ($datalogin = pg_fetch_assoc($queryprivege)) {
+            echo $datalogin['privelegevalue'];
+          }
         if($datalogin['privelegevalue'] === 3){
-            header("Location: superadminpage.php");
+            header("Location: superadminpage.html");
             exit();
         }
         if($datalogin['privelegevalue'] === 2){
@@ -40,11 +56,13 @@ if(isset($_POST['dologin']))
             echo "Ваша учетная запись заблокирована";
             exit();
         }
-        exit();
-    } else { // вызвать экран не правильный логин или пароль
-        echo "Вы ввели неправильный логин/пароль";
-        exit();
-    }
+    }   else {
+            echo "<div class='col-xs-12 col-sm-12 col-md-12 col-xl-12'>
+                    <p class='text-center' style='font-size: 25px;'>Неверный логин или пароль</p>
+                </div>";
+            exit();
+        }
+
 
     // Сравниваем пароли
    /* if($data['pwd'] === md5(md5($_POST['pwd'])))
