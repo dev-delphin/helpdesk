@@ -1,7 +1,6 @@
 <?php
     require 'connection.php';
     require 'config.php';
-    include 'login1.html';
 // Страница авторизации
 
 // Функция для генерации случайной строки
