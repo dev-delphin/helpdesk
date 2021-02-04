@@ -13,16 +13,18 @@
     }
     return $code;
 }*/
-//$error = "<div><p class='text-center' style='font-size: 25px;'>Неверный логин или пароль</p></div>";
-if(isset($_POST['dologin']))
-{
+//$error = "-1";
+//echo json_encode(array('done'=>-1));
+//if(isset($_POST['dologin']))
+//if(isset($_POST['login']) && $_POST['login'] && isset($_POST['pwd']) && $_POST['pwd'])
+//{
     // Вытаскиваем из БД запись, у которой логин равняеться введенному
     $querylogin = pg_query($connection,"SELECT pwd FROM users WHERE login='".pg_escape_string($connection,$_POST['login'])."'LIMIT 1");
     //$datapwd = pg_fetch_assoc($querylogin);
     if (pg_num_rows($querylogin) > 0) {
         $datapwd = pg_fetch_assoc($querylogin);
     } else {
-        echo "<div><p class='text-center' style='font-size: 25px;'>Неверный логин или пароль</p></div>";
+        echo "error";
         exit;
     }
     //запрос логина если логин верен то запрос пароля иначче еррор
@@ -33,31 +35,34 @@ if(isset($_POST['dologin']))
         if (pg_num_rows($queryprivege) > 0) {
             $datalogin = pg_fetch_assoc($queryprivege);
         } else {
-            echo "<div><p class='text-center' style='font-size: 25px;'>Неверный логин или пароль</p></div>";
+            echo "error";
             exit;
         }
         if($datalogin['privelegevalue'] == 3){
-            header("Location: ../html/superadminpage.html");
+
+            echo "superadmin";
             exit;
         }
-        if($datalogin['privelegevalue'] == 2){
-            header("Location: ../html/admin.html");
+        else if($datalogin['privelegevalue'] == 2){
+            echo "admin";
             exit;
         }
-        if($datalogin['privelegevalue'] == 1){
-            header("Location: ../html/technik.html");
+        else if($datalogin['privelegevalue'] == 1){
+            echo "technik";
             exit;
         }
-        if($datalogin['privelegevalue'] == 0){
-            echo "<div><p class='text-center' style='font-size: 25px;'>Эта учетная запись отключена</p></div>";;
+        else if($datalogin['privelegevalue'] == 0){
+            echo "disabled";
             exit;
         }
     }   else {
-            echo "<div class='col-xs-12 col-sm-12 col-md-12 col-xl-12'>
-                    <p class='text-center' style='font-size: 25px;'>Неверный логин или пароль</p>
-                </div>";
+        echo "error";
             exit;
         }
+
+        /*
+        создать сессию записать в таблицу с хэш
+        */
 
 
     // Сравниваем пароли
@@ -65,16 +70,9 @@ if(isset($_POST['dologin']))
     {
         // Генерируем случайное число и шифруем его
       //  $hash = md5(generateCode(10));
-/*
-        if(!empty($_POST['not_attach_ip']))
-        {
-            // Если пользователя выбрал привязку к IP
-            // Переводим IP в строку
-            $insip = ", user_ip=INET_ATON('".$_SERVER['REMOTE_ADDR']."')";
-        }
-*/
+
 /*     // Записываем в БД новый хеш авторизации и IP
-        pg_query($connection, "UPDATE users SET user_hash='".$hash."' ".$insip." WHERE user_id='".$data['user_id']."'");
+        pg_query($connection, "UPDATE users SET user_hash='".$hash."' WHERE user_id='".$data['user_id']."'");
 
         // Ставим куки
         setcookie("id", $data['user_id'], time()+60*60*24*30, "/");
@@ -82,11 +80,12 @@ if(isset($_POST['dologin']))
 
         // Переадресовываем браузер на страницу проверки нашего скрипта
         header("Location: check.php"); exit();
-        header("Location: createnewuser.html"); exit();
+        //header("Location: createnewuser.html"); exit();
     }
     /*else
     {
         print "Вы ввели неправильный логин/пароль";
     }*/
-}
+//}
+pg_close($connection);
 ?>

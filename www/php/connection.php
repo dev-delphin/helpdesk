@@ -7,5 +7,4 @@
  {
    echo "Couldn't make a connection!";
  }
-
 ?>

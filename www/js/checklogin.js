@@ -11,7 +11,7 @@ $("#dologin").on("click", function(){
     }
 
     $.ajax({
-        url: "../php/login1.php",
+        url: "../php/login.php",
         type: "POST",
         cache: false,
         data: {"login": login, "password": password},
@@ -35,6 +35,7 @@ $("#dologin").on("click", function(){
                 $("#dologin").prop("disabled", false);
                 return false;
             } else if (data === "disabled"){
+                $("#loginform").trigger("reset");
                 $("#error").text("Эта учетная запись отключена");
                 $("#dologin").prop("disabled", false);
                 return false;

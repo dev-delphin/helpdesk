@@ -13,18 +13,16 @@
     }
     return $code;
 }*/
-//$error = "-1";
-//echo json_encode(array('done'=>-1));
-//if(isset($_POST['dologin']))
-//if(isset($_POST['login']) && $_POST['login'] && isset($_POST['pwd']) && $_POST['pwd'])
-//{
+//$error = "<div><p class='text-center' style='font-size: 25px;'>Неверный логин или пароль</p></div>";
+if(isset($_POST['dologin']))
+{
     // Вытаскиваем из БД запись, у которой логин равняеться введенному
     $querylogin = pg_query($connection,"SELECT pwd FROM users WHERE login='".pg_escape_string($connection,$_POST['login'])."'LIMIT 1");
     //$datapwd = pg_fetch_assoc($querylogin);
     if (pg_num_rows($querylogin) > 0) {
         $datapwd = pg_fetch_assoc($querylogin);
     } else {
-        echo "error";
+        echo "<div><p class='text-center' style='font-size: 25px;'>Неверный логин или пароль</p></div>";
         exit;
     }
     //запрос логина если логин верен то запрос пароля иначче еррор
@@ -35,27 +33,29 @@
         if (pg_num_rows($queryprivege) > 0) {
             $datalogin = pg_fetch_assoc($queryprivege);
         } else {
-            echo "error";
+            echo "<div><p class='text-center' style='font-size: 25px;'>Неверный логин или пароль</p></div>";
             exit;
         }
         if($datalogin['privelegevalue'] == 3){
-            echo "superadmin";
+            header("Location: ../html/superadminpage.html");
             exit;
         }
-        else if($datalogin['privelegevalue'] == 2){
-            echo "admin";
+        if($datalogin['privelegevalue'] == 2){
+            header("Location: ../html/admin.html");
             exit;
         }
-        else if($datalogin['privelegevalue'] == 1){
-            echo "technik";
+        if($datalogin['privelegevalue'] == 1){
+            header("Location: ../html/technik.html");
             exit;
         }
-        else if($datalogin['privelegevalue'] == 0){
-            echo "disabled";
+        if($datalogin['privelegevalue'] == 0){
+            echo "<div><p class='text-center' style='font-size: 25px;'>Эта учетная запись отключена</p></div>";;
             exit;
         }
     }   else {
-        echo "error";
+            echo "<div class='col-xs-12 col-sm-12 col-md-12 col-xl-12'>
+                    <p class='text-center' style='font-size: 25px;'>Неверный логин или пароль</p>
+                </div>";
             exit;
         }
 
@@ -88,5 +88,5 @@
     {
         print "Вы ввели неправильный логин/пароль";
     }*/
-//}
+}
 ?>
