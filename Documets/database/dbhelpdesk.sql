@@ -79,14 +79,6 @@ CREATE TABLE tasks(
 ----------------------------------------------------------
 -- Табилца sessions, для указания пола пользователя
 -- "id" уникальный идентификатор 
--- "theme" привелегия
--- "description" описание задачи
--- "publisher" пользователь опубликовавший задачу
--- "responsible" пользователь принявший задачу
--- "stage" стадия
--- "createdate" дата создания задачи
--- "editdate" дата принятия задачи
--- "finishdate" дата выполнения задачи
 DROP TABLE IF EXISTS sessions CASCADE;
 CREATE TABLE sessions(
 	id SERIAL PRIMARY KEY NOT NULL,
