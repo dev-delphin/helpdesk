@@ -21,7 +21,7 @@ $("#dologin").on("click", function(){
         },
         success: function(data){
             if (data == "superadmin"){
-                location = "../html/superadminpage.html";
+                location = "../html/main.html";
                 return true;
             } else if (data == "admin"){
                 location = "../html/admin.html";
