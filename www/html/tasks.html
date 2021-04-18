@@ -1,0 +1,118 @@
+<?php
+    require '../php/connection.php';
+    require '../php/config.php';
+    $queryusers = pg_query($connection,"SELECT login FROM users WHERE privelege != 4");
+    $i = 0;
+    while ($row = pg_fetch_assoc($queryusers))
+    {
+        $mymas[$i] = $row["login"];
+        $i++;
+    }
+?>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+        <link rel="stylesheet" href="../css/modalsettings.css">
+        <style>
+            .center{
+                display: block; 
+                margin: 0 auto;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div><p class='text-center' style='font-size: 25px; text-decoration-color: brown;' id="error"></p></div><br>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-xl-12 center" style="border: 2px solid #26d368; border-radius: 15px;">
+                <div style="float:right; padding-right: 15px;">
+                    <form>
+                        <button type="button" name="createtask" id="createtask" class="btn btn-primary text-center" style="border-radius: 15px;">
+                            <a href="#modalcreatetasks" class="open_modal" style="color:white; text-decoration: none;"><b style="font-size: 15px;">Создать задачу</b></a>
+                        </button>
+                        <button type="button" name="settings" id="settings" class="btn btn-primary text-center" style="border-radius: 15px;">
+    <!--новое окно пользователи-->                        <a href="#modalsettings" class="open_modal" style="color:white; text-decoration: none;"><b style="font-size: 15px;">Настройки</b></a>
+                        </button>
+                    </form>
+                </div>
+                <div><p class='text-center' style='font-size: 25px;' id="error"></p></div>
+            </div>
+        </div>
+        <div id="modalcreatetasks" class="modal_div">
+            <div class="center">
+                <span class="modal_close">X</span>
+                <form>
+                    <p><b>Тема</b>
+                    <input class="form-control" style="font-size: 18px;" type="text" id="login" name="login" placeholder="Тема" required /></p>
+                    <p><b>Описание</b><br>
+                    <input class="form-control" style="font-size: 18px;" type="text" id="pwd" name="pwd" placeholder="Описание" required /></p>
+                    <p><b>Cрок</b><br>
+                    <input style="font-size: 18px;" type="checkbox" id="checkterm" name="checkterm" onclick="CheckTerm(this)"/>
+                    <input type="date" id="termdate" name="termdate" disabled/>
+                    <input type="time" id="termtime" name="termtime" disabled/></p>
+                    <p><b>Назначить отвественного</b><br>
+                    <input  type="checkbox" id="checkresponsible" name="checkresponsible" onclick="CheckResponsible(this)"/> <!--combobox/select to database-->
+                    <select id="usersfromdb" name="usersfromdb" disabled>
+                        <?php
+                            foreach ($mymas as &$login) {
+                                echo("<option value='".$login."'>".$login."</option>");
+                            }
+                        ?>
+                     </select></p>
+                    <button class="btn btn-primary text-center" style="border-radius: 15px;" id="savesettings" name="savesettings">Создать задачу</button> <!--обработчик с занесением с бд-->
+                </form>
+            </div>
+         </div>
+        <div id="modalsettings" class="modal_div">
+            <div class="center">
+                <span class="modal_close">X</span>
+                <form>
+                    <p><b>Имя пользователя/Логин</b>
+                    <input class="form-control" style="font-size: 18px;" type="text" id="login" name="login" placeholder="Имя пользователя/Логин" required></p>
+                    <p><b>Пароль</b><br>
+                    <input class="form-control" style="font-size: 18px;" type="password" id="pwd" name="pwd" placeholder="Пароль" required></p>
+                    <p><b>Почта</b><br>
+                    <input class="form-control" style="font-size: 18px;" type="text" id="email" name="email" placeholder="Почта" required></p>
+                    <p><b>Привелегии</b><br>
+                    <input class="form-control" style="font-size: 18px;" type="text" id="privelege" name="privelege" placeholder="Привелегии" required></p> <!--combobox/select to database-->
+                    <button class="btn btn-primary text-center" style="border-radius: 15px;" id="savesettings" name="savesettings">Сохранить</button> <!--обработчик с занесением с бд-->
+                </form>
+            </div>
+         </div>
+         <div id="overlay"></div><!-- Пoдлoжкa, oднa нa всю стрaницу -->
+         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU" crossorigin="anonymous"></script>
+         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj" crossorigin="anonymous"></script>        
+         <script type="text/javascript" src="../js/modalsettings.js"></script>
+         <script>
+             function CheckTerm(checkterm) {
+                 var termdate = document.getElementById("termdate");
+                 var termtime = document.getElementById("termtime");
+                 termdate.disabled = checkterm.checked ? false : true;
+                 termtime.disabled = checkterm.checked ? false : true;
+                 if (!termdate.disabled) {
+                     termdate.focus();
+                 }
+             }
+             function CheckResponsible(checkresponsible) {
+                 var usersfromdb = document.getElementById("usersfromdb");
+                 usersfromdb.disabled = checkresponsible.checked ? false : true;
+                 if (!usersfromdb.disabled) {
+                     usersfromdb.focus();
+                 }
+             }
+             /*$(document).ready(function() {
+                 var datavalue= "<?php echo json_encode($k) ?>";
+                 $.ajax({
+                     success: function(datavalue) {
+                         var result = JSON.parse(datavalue);
+                         $("#usersfromdb").html(result.message);
+                     },
+                 });
+             });*/
+         </script>
+    </body>
+</html>

@@ -1,45 +1,46 @@
-$("#dologin").on("click", function(){
+$("#savesettings").on("click", function(){
     var login = $("#login").val();
-    var password = $("#password").val();
-    
+    var password = $("#pwd").val();
+    var email= $("#email").val();
+    var privelege = $("#privelege").val();
+
+    const beginWithoutDigit = /^\D.*$/
+    const withoutSpecialChars = /^[^-() /]*$/
+    const containsLetters = /^.*[a-zA-Z]+.*$/
+
     if(login == ""){
         $("#error").text("Поле логина пустое");
         return false;
     } else if(password == ""){
         $("#error").text("Поле пароля пустое");
         return false;
+    } else if(email == ""){
+        $("#error").text("Поле почты пустое");
+        return false;
+    } else if(privelege == ""){
+        $("#error").text("Поле привелегии пустое");
+        return false;
+    }
+    
+    if( beginWithoutDigit.test(password) &&
+    withoutSpecialChars.test(password) &&
+    containsLetters.test(password) ){
+        console.log('ok');
+    } else {
+        $("#error").text("В пароле использованы некоректные символы");
     }
 
     $.ajax({
-        url: "../php/login.php",
+        url: "../php/createuser.php",
         type: "POST",
         cache: false,
-        data: {"login": login, "password": password},
+        data: {"login": login, "password": password, "email": email, "privelege": privelege},
         dataType: "html",
         beforeSend: function(){
-            $("#dologin").prop("disabled", true);
+            $("#savesettings").prop("disabled", true);
         },
         success: function(data){
-            if (data == "superadmin"){
-                location = "../html/tasks.html";
-                return true;
-            } else if (data == "admin"){
-                location = "../html/admin.html";
-                return true;
-            } else if (data == "technik"){
-                location = "../html/.html";
-                return true;
-            } else if (data == "error"){
-                $("#loginform").trigger("reset");
-                $("#error").text("Неверный логин или пароль");
-                $("#dologin").prop("disabled", false);
-                return false;
-            } else if (data === "disabled"){
-                $("#loginform").trigger("reset");
-                $("#error").text("Эта учетная запись отключена");
-                $("#dologin").prop("disabled", false);
-                return false;
-            }
+            $("#error").text("Настройки пользователя сохранены");
         }
     });
 });

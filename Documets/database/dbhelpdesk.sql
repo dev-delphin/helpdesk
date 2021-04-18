@@ -12,10 +12,9 @@ CREATE TABLE priveleges(
     privelegevalue INT NOT NULL
 );
 -- defaul priveges --
-INSERT INTO priveleges (id, privelegename, privelegevalue) VALUES (1, 'СуперАдминистратор', 3);
-INSERT INTO priveleges (id, privelegename, privelegevalue) VALUES (2, 'Администратор', 2);
-INSERT INTO priveleges (id, privelegename, privelegevalue) VALUES (3, 'Техник', 1);
-INSERT INTO priveleges (id, privelegename, privelegevalue) VALUES (4, 'Disabled', 0);
+INSERT INTO priveleges (id, privelegename, privelegevalue) VALUES (1, 'Disabled', 0);
+INSERT INTO priveleges (id, privelegename, privelegevalue) VALUES (2, 'СуперАдминистратор', 3);
+INSERT INTO priveleges (id, privelegename, privelegevalue) VALUES (3, 'Администратор', 2);
 
 ----------------------------------------------------------
 -- Табилца users, для указания пола пользователя
@@ -33,10 +32,9 @@ CREATE TABLE users(
     description VARCHAR(255)
 );
 --- Default user ---
-INSERT INTO users (id, login, pwd, privelege, description) VALUES (1, 'SuperAdmin', 'helpdesk', 1, 'Стандартный пользователь');
-INSERT INTO users (id, login, pwd, privelege, description) VALUES (2, 'Admin', 'helpdesk', 2, 'Стандартный пользователь');
-INSERT INTO users (id, login, pwd, privelege, description) VALUES (3, 'technik', 'helpdesk', 3, 'Стандартный пользователь');
-INSERT INTO users (id, login, pwd, privelege, description) VALUES (4, 'disabled', 'helpdesk', 4, 'Стандартный пользователь');
+INSERT INTO users (id, login, pwd, privelege, description) VALUES (1, 'disabled', 'helpdesk', 1, 'Стандартный пользователь');
+INSERT INTO users (id, login, pwd, privelege, description) VALUES (2, 'SuperAdmin', 'helpdesk', 2, 'Стандартный пользователь');
+INSERT INTO users (id, login, pwd, privelege, description) VALUES (3, 'Admin', 'helpdesk', 3, 'Стандартный пользователь');
 
 ----------------------------------------------------------
 -- Табилца stage, для указания пола пользователя
@@ -55,12 +53,13 @@ INSERT INTO stage (id, stage) VALUES (3, 'Завершено');
 ----------------------------------------------------------
 -- Табилца tasks, для указания пола пользователя
 -- "id" уникальный идентификатор 
--- "theme" привелегия
+-- "theme" тема
 -- "description" описание задачи
 -- "publisher" пользователь опубликовавший задачу
--- "responsible" пользователь принявший задачу
--- "stage" стадия
+-- "termdatetime" срок выполнить до
 -- "createdate" дата создания задачи
+-- "stage" стадия
+-- "responsible" пользователь принявший задачу
 -- "editdate" дата принятия задачи
 -- "finishdate" дата выполнения задачи
 DROP TABLE IF EXISTS tasks CASCADE;
@@ -69,9 +68,10 @@ CREATE TABLE tasks(
 	theme VARCHAR(255) NOT NULL,
     description VARCHAR (255) NOT NULL,
     publisher INT REFERENCES users (id) NOT NULL,
+    termdatetime  DATE,
+    createdate DATE NOT NULL,
     responsible INT REFERENCES users (id) NOT NULL,
     stage INT REFERENCES stage (id) ON DELETE CASCADE,
-    createdate DATE NOT NULL,
     editdate DATE NOT NULL,
     finishdate DATE NOT NULL
 );
@@ -84,5 +84,5 @@ CREATE TABLE sessions(
 	id SERIAL PRIMARY KEY NOT NULL,
 	userid int REFERENCES users (id),
     hashs varchar(128) NOT NULL,
-    ip varchar NOT NULL
+    ip varchar
 );
