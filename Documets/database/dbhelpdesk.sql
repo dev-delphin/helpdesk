@@ -54,7 +54,7 @@ INSERT INTO stage (id, stage) VALUES (3, 'Завершено');
 -- Табилца tasks, для указания пола пользователя
 -- "id" уникальный идентификатор 
 -- "theme" тема
--- "description" описание задачи
+-- "descriptions" описание задачи
 -- "publisher" пользователь опубликовавший задачу
 -- "termdatetime" срок выполнить до
 -- "createdate" дата создания задачи
@@ -66,14 +66,14 @@ DROP TABLE IF EXISTS tasks CASCADE;
 CREATE TABLE tasks(
 	id SERIAL PRIMARY KEY NOT NULL,
 	theme VARCHAR(255) NOT NULL,
-    description VARCHAR (255) NOT NULL,
-    publisher INT REFERENCES users (id) NOT NULL,
-    termdatetime  DATE,
-    createdate DATE NOT NULL,
-    responsible INT REFERENCES users (id) NOT NULL,
+    descriptions VARCHAR (255) NOT NULL,
+    publisher INT REFERENCES users (id), --NOT NULL,
+    termdate  DATE,
+    createdate DATE,--NOT NULL
+    responsible INT REFERENCES users (id),
     stage INT REFERENCES stage (id) ON DELETE CASCADE,
-    editdate DATE NOT NULL,
-    finishdate DATE NOT NULL
+    editdate DATE,
+    finishdate DATE
 );
 
 ----------------------------------------------------------
