@@ -70,7 +70,7 @@ CREATE TABLE tasks(
     publisher INT REFERENCES users (id), --NOT NULL,
     termdate  DATE,
     createdate DATE,--NOT NULL
-    responsible INT REFERENCES users (id),
+    responsible VARCHAR,
     stage INT REFERENCES stage (id) ON DELETE CASCADE,
     editdate DATE,
     finishdate DATE

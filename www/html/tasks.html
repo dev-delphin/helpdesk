@@ -48,9 +48,10 @@
                     <input class="form-control" style="font-size: 18px;" type="text" id="theme" name="theme" placeholder="Тема" required /></p>
                     <p><b>Описание</b><br>
                     <input class="form-control" style="font-size: 18px;" type="text" id="descriptions" name="descriptions" placeholder="Описание" required /></p>
-                    <p><b>Cрок</b><br>
+                    <p><b>Cрок "целове число"</b><br>
                     <input style="font-size: 18px;" type="checkbox" id="checkterm" name="checkterm" onclick="CheckTerm(this)"/>
-                    <input type="date" id="termdate" name="termdate" disabled/></p>
+                    <!--<input type="date" id="termdate" name="termdate" disabled/></p>-->
+                    <input type="text" id="termdate" name="termdate" disabled/> Дней</p>
                     <p><b>Назначить отвественного</b><br>
                     <input  type="checkbox" id="checkresponsible" name="checkresponsible" onclick="CheckResponsible(this)"/>
                     <select id="usersfromdb" name="usersfromdb" disabled>
@@ -90,9 +91,7 @@
          <script>
             function CheckTerm(checkterm) {
                 var termdate = document.getElementById("termdate");
-                var termtime = document.getElementById("termtime");
                 termdate.disabled = checkterm.checked ? false : true;
-                termtime.disabled = checkterm.checked ? false : true;
                 if (!termdate.disabled) {
                     termdate.focus();
                 }
