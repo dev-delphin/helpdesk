@@ -78,11 +78,6 @@ $("#savetask").on("click", function(){
         $("#savetask").prop("disabled", false);
         $("#termdate").prop("disabled", true);
         $("#usersfromdb").prop("disabled", true);
+        $("#tasktable").load("tasks.html #tasktable"); // refresh table
     });
-    /*if ($("#usersfromdb").val() > 0){
-        var usersfromdb = $("#usersfromdb").val()
-    }*/
-  /*  if ($("#termdate").val() > 0 && $("#usersfromdb").val() > 0){
-        var 
-    }*/
 });

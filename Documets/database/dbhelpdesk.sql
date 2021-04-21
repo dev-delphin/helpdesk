@@ -13,8 +13,8 @@ CREATE TABLE priveleges(
 );
 -- defaul priveges --
 INSERT INTO priveleges (id, privelegename, privelegevalue) VALUES (1, 'Disabled', 0);
-INSERT INTO priveleges (id, privelegename, privelegevalue) VALUES (2, 'СуперАдминистратор', 3);
-INSERT INTO priveleges (id, privelegename, privelegevalue) VALUES (3, 'Администратор', 2);
+INSERT INTO priveleges (id, privelegename, privelegevalue) VALUES (2, 'SuperAdministrator', 3);
+INSERT INTO priveleges (id, privelegename, privelegevalue) VALUES (3, 'Administrator', 2);
 
 ----------------------------------------------------------
 -- Табилца users, для указания пола пользователя
@@ -32,9 +32,9 @@ CREATE TABLE users(
     description VARCHAR(255)
 );
 --- Default user ---
-INSERT INTO users (id, login, pwd, privelege, description) VALUES (1, 'disabled', 'helpdesk', 1, 'Стандартный пользователь');
-INSERT INTO users (id, login, pwd, privelege, description) VALUES (2, 'SuperAdmin', 'helpdesk', 2, 'Стандартный пользователь');
-INSERT INTO users (id, login, pwd, privelege, description) VALUES (3, 'Admin', 'helpdesk', 3, 'Стандартный пользователь');
+INSERT INTO users (id, login, pwd, privelege, description) VALUES (1, 'disabled', 'helpdesk', 1, 'Standart user');
+INSERT INTO users (id, login, pwd, privelege, description) VALUES (2, 'SuperAdmin', 'helpdesk', 2, 'Standart user');
+INSERT INTO users (id, login, pwd, privelege, description) VALUES (3, 'Admin', 'helpdesk', 3, 'Standart user');
 
 ----------------------------------------------------------
 -- Табилца stage, для указания пола пользователя

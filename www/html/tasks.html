@@ -1,18 +1,7 @@
-<?php
-    require '../php/connection.php';
-    require '../php/config.php';
-    $queryusers = pg_query($connection,"SELECT login FROM users WHERE privelege != 1");
-    $i = 0;
-    while ($row = pg_fetch_assoc($queryusers))
-    {
-        $mymas[$i] = $row["login"];
-        $i++;
-    }
-?>
 <!DOCTYPE html>
-<html>
+<html lang="ru">
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta http-equiv="Content-Type" content="text/html"; charset="utf-8">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
         <link rel="stylesheet" href="../css/modalsettings.css">
@@ -27,15 +16,61 @@
         <div class="container-fluid">
             <div><p class='text-center' style='font-size: 25px; text-decoration-color: brown;' id="error"></p></div><br>
             <div class="col-xs-12 col-sm-12 col-md-12 col-xl-12 center" style="border: 2px solid #26d368; border-radius: 15px;">
+                <br>
                 <div style="float:right; padding-right: 15px;">
                     <form>
                         <button type="button" name="createtask" id="createtask" class="btn btn-primary text-center" style="border-radius: 15px;">
                             <a href="#modalcreatetasks" class="open_modal" style="color:white; text-decoration: none;"><b style="font-size: 15px;">Создать задачу</b></a>
                         </button>
                         <button type="button" name="settings" id="settings" class="btn btn-primary text-center" style="border-radius: 15px;">
-    <!--новое окно пользователи-->                        <a href="#modalsettings" class="open_modal" style="color:white; text-decoration: none;"><b style="font-size: 15px;">Настройки</b></a>
+                           <a href="#modalsettings" class="open_modal" style="color:white; text-decoration: none;"><b style="font-size: 15px;">Настройки пользователя</b></a>
                         </button>
+                        <button type="button" name="creteuser" id="creteuser" class="btn btn-primary text-center" style="border-radius: 15px;">
+                            <a href="#modalcreteuser" class="open_modal" style="color:white; text-decoration: none;"><b style="font-size: 15px;">Создать пользователя</b></a>
+                         </button>
                     </form>
+                </div>
+                <br><br><br>
+                <div>
+                    <table class="table table-bordered" id="tasktable">
+                        <thead class="thead-inverse">
+                            <tr>
+                                <th>#</th>
+                                <th>Тема</th>
+                                <th>Описание</th>
+                                <th>Публикатор</th>
+                                <th>Сдать до</th>
+                                <th>Создано</th>
+                                <th>Ответсвенный</th>
+                                <th>Стадия</th>
+                                <th>Редактировано</th>
+                                <th>Завершено</th>
+                                <th>Действие</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                                require '../php/connection.php';
+                                require '../php/config.php';
+                                $tasksfromdb = pg_query($connection, "SELECT id, theme, descriptions, publisher, termdate, createdate, responsible, stage, editdate, finishdate FROM tasks;");
+
+                                while($areatasks = pg_fetch_array($tasksfromdb)){
+                                echo    "<tr>
+                                <td>".$areatasks['id']."</td>
+                                <td width=10%>".$areatasks['theme']."</td>
+                                <td width=25%>".$areatasks['descriptions']."</td>
+                                <td>".$areatasks['publisher']."</td>
+                                <td>".$areatasks['termdate']."</td>
+                                <td>".$areatasks['createdate']."</td>
+                                <td>".$areatasks['responsible']."</td>
+                                <td>".$areatasks['stage']."</td>
+                                <td>".$areatasks['editdate']."</td>
+                                <td>".$areatasks['finishdate']."</td>
+                                <td><button type='button' name='taketask' id='taketask' class='btn btn-warning text-center' style='border-radius: 15px;'>Взять задачу</button></td>
+                                </tr>";
+                            } ?>
+                        </tbody>
+                    </table>
                 </div>
                 <div><p class='text-center' style='font-size: 25px;' id="error"></p></div>
             </div>
@@ -56,8 +91,13 @@
                     <input  type="checkbox" id="checkresponsible" name="checkresponsible" onclick="CheckResponsible(this)"/>
                     <select id="usersfromdb" name="usersfromdb" disabled>
                         <?php
-                            foreach ($mymas as &$login) {
-                                echo("<option value='".$login."'>".$login."</option>");
+                            require '../php/connection.php';
+                            require '../php/config.php';
+                            $queryusers = pg_query($connection,"SELECT login FROM users WHERE privelege != 1");
+                            $i = 0;
+                            while ($row = pg_fetch_assoc($queryusers))
+                            {
+                                echo("<option value=".$row['login'].">".$row['login']."</option>");
                             }
                         ?>
                     </select></p>
@@ -65,19 +105,58 @@
                 </form>
             </div>
         </div>
+        <!--Доделать обработку-->
         <div id="modalsettings" class="modal_div">
             <div class="center">
                 <span class="modal_close">X</span>
-                <form>
+                <form method="POST">
                     <p><b>Имя пользователя/Логин</b>
-                    <input class="form-control" style="font-size: 18px;" type="text" id="login" name="login" placeholder="Имя пользователя/Логин" required></p>
+                    <input class="form-control" style="font-size: 18px;" type="text" id="loginseting" name="loginseting" placeholder="Имя пользователя/Логин" required></p>
                     <p><b>Пароль</b><br>
-                    <input class="form-control" style="font-size: 18px;" type="password" id="pwd" name="pwd" placeholder="Пароль" required></p>
+                    <input class="form-control" style="font-size: 18px;" type="password" id="pwdseting" name="pwdseting" placeholder="Пароль" required></p>
                     <p><b>Почта</b><br>
-                    <input class="form-control" style="font-size: 18px;" type="text" id="email" name="email" placeholder="Почта" required></p>
+                    <input class="form-control" style="font-size: 18px;" type="text" id="emailseting" name="emailseting" placeholder="Почта" required></p>
                     <p><b>Привелегии</b><br>
-                    <input class="form-control" style="font-size: 18px;" type="text" id="privelege" name="privelege" placeholder="Привелегии" required></p> <!--combobox/select to database-->
-                    <button class="btn btn-primary text-center" style="border-radius: 15px;" id="savesettings" name="savesettings">Сохранить</button> <!--обработчик с занесением с бд-->
+                    <select id="privelegeseting" name="usersfromdb">
+                        <?php
+                            require '../php/connection.php';
+                            require '../php/config.php';
+                            $queryprivelege = pg_query($connection,"SELECT privelegename FROM priveleges");
+                            $i = 0;
+                            while ($row = pg_fetch_assoc($queryprivelege))
+                            {
+                                echo("<option value=".$row['privelegename'].">".$row['privelegename']."</option>");
+                            }
+                        ?>
+                    </select></p>
+                    <button type="button" class="btn btn-primary text-center" style="border-radius: 15px;" id="savesettings" name="savesettings">Сохранить</button> <!--обработчик с занесением с бд-->
+                </form>
+            </div>
+        </div>
+        <div id="modalcreteuser" class="modal_div">
+            <div class="center">
+                <span class="modal_close">X</span>
+                <form id="formcreateuser" method="POST">
+                    <p><b>Имя пользователя/Логин</b>
+                    <input class="form-control" style="font-size: 18px;" type="text" id="logincreate" name="logincreate" placeholder="Имя пользователя/Логин" required></p>
+                    <p><b>Пароль</b><br>
+                    <input class="form-control" style="font-size: 18px;" type="password" id="pwdcreate" name="pwdcreate" placeholder="Пароль" required></p>
+                    <p><b>Почта</b><br>
+                    <input class="form-control" style="font-size: 18px;" type="text" id="emailcreate" name="emailcreate" placeholder="Почта" required></p>
+                    <p><b>Привелегии</b><br>
+                    <select id="privelegecreate" name="usersfromdb">
+                        <?php
+                            require '../php/connection.php';
+                            require '../php/config.php';
+                            $queryprivelege = pg_query($connection,"SELECT privelegename FROM priveleges");
+                            $i = 0;
+                            while ($row = pg_fetch_assoc($queryprivelege))
+                            {
+                                echo("<option value=".$row['privelegename'].">".$row['privelegename']."</option>");
+                            }
+                        ?>
+                    </select></p>
+                    <button type="button" class="btn btn-primary text-center" style="border-radius: 15px;" id="createuser" name="createuser">Создать</button> <!--обработчик с занесением с бд-->
                 </form>
             </div>
          </div>
@@ -88,6 +167,7 @@
          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj" crossorigin="anonymous"></script>        
          <script type="text/javascript" src="../js/modalsettings.js"></script>
          <script type="text/javascript" src="../js/insterttask.js"></script>
+         <script type="text/javascript" src="../js/createuser.js"></script>
          <script>
             function CheckTerm(checkterm) {
                 var termdate = document.getElementById("termdate");
@@ -103,7 +183,8 @@
                     usersfromdb.focus();
                 }
             }
-             /*$(document).ready(function() {
+            // чтение привелегии пользователя и сохраенние ее в переменную и провека каждый раз
+            /*$(document).ready(function() {
                  var datavalue= "<?php echo json_encode($k) ?>";
                  $.ajax({
                      success: function(datavalue) {
@@ -112,6 +193,7 @@
                      },
                  });
              });*/
+
          </script>
     </body>
 </html>
