@@ -82,7 +82,7 @@ CREATE TABLE tasks(
 DROP TABLE IF EXISTS sessions CASCADE;
 CREATE TABLE sessions(
 	id SERIAL PRIMARY KEY NOT NULL,
-	userid int REFERENCES users (id),
-    hashs varchar(128) NOT NULL,
+	username VARCHAR,
+--    hashs varchar(128) NOT NULL,
     ip varchar
 );

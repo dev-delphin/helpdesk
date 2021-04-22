@@ -23,7 +23,7 @@
                             <a href="#modalcreatetasks" class="open_modal" style="color:white; text-decoration: none;"><b style="font-size: 15px;">Создать задачу</b></a>
                         </button>
                         <button type="button" name="settings" id="settings" class="btn btn-primary text-center" style="border-radius: 15px;">
-                           <a href="#modalsettings" class="open_modal" style="color:white; text-decoration: none;"><b style="font-size: 15px;">Настройки пользователя</b></a>
+                           <a href="#modalsettings" class="open_modal" style="color:white; text-decoration: none;"><b style="font-size: 15px;" id="usernamesettings">Настройки пользователя</b></a>
                         </button>
                         <button type="button" name="creteuser" id="creteuser" class="btn btn-primary text-center" style="border-radius: 15px;">
                             <a href="#modalcreteuser" class="open_modal" style="color:white; text-decoration: none;"><b style="font-size: 15px;">Создать пользователя</b></a>
@@ -108,7 +108,7 @@
                 </form>
             </div>
         </div>
-        <!--Доделать обработку-->
+        <!-- вывод в поля данных из БД-->
         <div id="modalsettings" class="modal_div">
             <div class="center">
                 <span class="modal_close">X</span>
@@ -206,15 +206,14 @@
                 });
             });
             // чтение привелегии пользователя и сохраенние ее в переменную и провека каждый раз
-            /*$(document).ready(function() {
-                 var datavalue= "<?php echo json_encode($k) ?>";
-                 $.ajax({
-                     success: function(datavalue) {
-                         var result = JSON.parse(datavalue);
-                         $("#usersfromdb").html(result.message);
-                     },
-                 });
-             });*/
+            $(document).ready(function() {
+                $.get("../php/checkauthtask.php", function(data){
+                    if (data == "nook"){
+                        location = "../index.html";
+                        return true;
+                    } else { $("#usernamesettings").text(data); }
+                });
+             });
 
          </script>
     </body>
