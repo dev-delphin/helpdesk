@@ -20,14 +20,8 @@ $("#dologin").on("click", function(){
             $("#dologin").prop("disabled", true);
         },
         success: function(data){
-            if (data == "superadmin"){
+            if (data == "login"){
                 location = "../html/tasks.html";
-                return true;
-            } else if (data == "admin"){
-                location = "../html/admin.html";
-                return true;
-            } else if (data == "technik"){
-                location = "../html/.html";
                 return true;
             } else if (data == "error"){
                 $("#loginform").trigger("reset");

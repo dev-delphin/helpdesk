@@ -18,7 +18,7 @@
             <div class="col-xs-12 col-sm-12 col-md-12 col-xl-12 center" style="border: 2px solid #26d368; border-radius: 15px;">
                 <br>
                 <div style="float:right; padding-right: 15px;">
-                    <form>
+                    <form method="POST">
                         <button type="button" name="createtask" id="createtask" class="btn btn-primary text-center" style="border-radius: 15px;">
                             <a href="#modalcreatetasks" class="open_modal" style="color:white; text-decoration: none;"><b style="font-size: 15px;">Создать задачу</b></a>
                         </button>
@@ -27,7 +27,10 @@
                         </button>
                         <button type="button" name="creteuser" id="creteuser" class="btn btn-primary text-center" style="border-radius: 15px;">
                             <a href="#modalcreteuser" class="open_modal" style="color:white; text-decoration: none;"><b style="font-size: 15px;">Создать пользователя</b></a>
-                         </button>
+                        </button>
+                        <button type="button" name="exit" id="exit" class="btn btn-primary text-center" style="border-radius: 15px;">
+                            <b>Выйти</b>
+                        </button>
                     </form>
                 </div>
                 <br><br><br>
@@ -183,6 +186,25 @@
                     usersfromdb.focus();
                 }
             }
+            $("#exit").on("click", function(){
+                $.ajax({
+                    url: "../php/exit.php",
+                    type: "POST",
+                    cache: false,
+                    data: {},
+                    dataType: "html",
+                    beforeSend: function(){
+                        $("#exit").prop("disabled", true);
+                    },
+                    success: function(data){
+                        if (data == "ok"){
+                            console.log(data);
+                            location = "../index.html";
+                            return true;
+                        }
+                    }
+                });
+            });
             // чтение привелегии пользователя и сохраенние ее в переменную и провека каждый раз
             /*$(document).ready(function() {
                  var datavalue= "<?php echo json_encode($k) ?>";

@@ -23,47 +23,17 @@
     //$datapwd = pg_fetch_assoc($querylogin);
     if (pg_num_rows($querylogin) > 0) {
         $datapwd = pg_fetch_assoc($querylogin);
+        if($datapwd['pwd'] === $_POST['password']){
+            $queryid = pg_query($connection,"SELECT id, login FROM users WHERE login='".pg_escape_string($connection,$_POST['login'])."'LIMIT 1");
+            $dataid = pg_fetch_assoc($queryid);                
+            $_SESSION['id'] = $dataid['id'];
+            $id = $_SESSION['id']; 
+            echo "login";
+        }
     } else {
         echo "error";
         exit;
     }
-    //запрос логина если логин верен то запрос пароля иначче еррор
-    if($datapwd['pwd'] === $_POST['password']){
-        $queryprivege = pg_query($connection,"SELECT priveleges.privelegevalue FROM users JOIN priveleges ON users.privelege=priveleges.id AND 
-                                    users.login='".pg_escape_string($connection,$_POST['login'])."' LIMIT 1");
-        //$datalogin = pg_fetch_assoc($queryprivege);
-        if (pg_num_rows($queryprivege) > 0) {
-            $datalogin = pg_fetch_assoc($queryprivege);
-        } else {
-            echo "error";
-            exit;
-        }
-        if($datalogin['privelegevalue'] == 3){
-
-            echo "superadmin";
-            exit;
-        }
-        else if($datalogin['privelegevalue'] == 2){
-            echo "admin";
-            exit;
-        }
-        else if($datalogin['privelegevalue'] == 1){
-            echo "technik";
-            exit;
-        }
-        else if($datalogin['privelegevalue'] == 0){
-            echo "disabled";
-            exit;
-        }
-    }   else {
-        echo "error";
-            exit;
-        }
-
-        /*
-        создать сессию записать в таблицу с хэш
-        */
-
 
     // Сравниваем пароли
    /* if($data['pwd'] === md5(md5($_POST['pwd'])))
