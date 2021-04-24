@@ -23,7 +23,7 @@
                             <a href="#modalcreatetasks" class="open_modal" style="color:white; text-decoration: none;"><b style="font-size: 15px;">Создать задачу</b></a>
                         </button>
                         <button type="button" name="settings" id="settings" class="btn btn-primary text-center" style="border-radius: 15px;">
-                           <a href="#modalsettings" class="open_modal" style="color:white; text-decoration: none;"><b style="font-size: 15px;" id="usernamesettings">Настройки пользователя</b></a>
+                           <a href="#modalsettings" class="open_modal" style="color:white; text-decoration: none;"><b style="font-size: 15px;" id="usernamesettings"></b></a>
                         </button>
                         <button type="button" name="creteuser" id="creteuser" class="btn btn-primary text-center" style="border-radius: 15px;">
                             <a href="#modalcreteuser" class="open_modal" style="color:white; text-decoration: none;"><b style="font-size: 15px;">Создать пользователя</b></a>
@@ -55,7 +55,7 @@
                             <?php
                                 require '../php/connection.php';
                                 require '../php/config.php';
-                                $tasksfromdb = pg_query($connection, "SELECT id, theme, descriptions, publisher, termdate, createdate, responsible, stage, editdate, finishdate FROM tasks;");
+                                $tasksfromdb = pg_query($connection, "SELECT * FROM tasks JOIN stage ON tasks.stage=stage.id;");
 
                                 while($areatasks = pg_fetch_array($tasksfromdb)){
                                 echo    "<tr>
@@ -69,7 +69,7 @@
                                 <td>".$areatasks['stage']."</td>
                                 <td>".$areatasks['editdate']."</td>
                                 <td>".$areatasks['finishdate']."</td>
-                                <td><button type='button' name='taketask' id='taketask' class='btn btn-warning text-center' style='border-radius: 15px;'>Взять задачу</button></td>
+                                <td><button type='button' name='taketask' id=".$areatasks['id']." class='btn btn-warning text-center' style='border-radius: 15px;'>Взять задачу</button></td>
                                 </tr>";
                             } ?>
                         </tbody>
@@ -113,25 +113,42 @@
             <div class="center">
                 <span class="modal_close">X</span>
                 <form method="POST">
-                    <p><b>Имя пользователя/Логин</b>
-                    <input class="form-control" style="font-size: 18px;" type="text" id="loginseting" name="loginseting" placeholder="Имя пользователя/Логин" required></p>
-                    <p><b>Пароль</b><br>
-                    <input class="form-control" style="font-size: 18px;" type="password" id="pwdseting" name="pwdseting" placeholder="Пароль" required></p>
-                    <p><b>Почта</b><br>
-                    <input class="form-control" style="font-size: 18px;" type="text" id="emailseting" name="emailseting" placeholder="Почта" required></p>
-                    <p><b>Привелегии</b><br>
-                    <select id="privelegeseting" name="usersfromdb">
-                        <?php
-                            require '../php/connection.php';
-                            require '../php/config.php';
-                            $queryprivelege = pg_query($connection,"SELECT privelegename FROM priveleges");
-                            $i = 0;
-                            while ($row = pg_fetch_assoc($queryprivelege))
-                            {
-                                echo("<option value=".$row['privelegename'].">".$row['privelegename']."</option>");
-                            }
-                        ?>
-                    </select></p>
+                    <?php
+                        require '../php/connection.php';
+                        require '../php/config.php';
+                        $ip = $_SERVER['REMOTE_ADDR'];
+                        $queryses = pg_query($connection,"SELECT username FROM sessions WHERE ip = '$ip'");
+                        echo ('<p><b>Имя пользователя/Логин</b>');
+                        while($ses = pg_fetch_assoc($queryses)){
+                            $login = $ses["username"];
+                            echo ('<input class="form-control" style="font-size: 18px;" type="text" id="loginseting" name="loginseting" placeholder="Имя пользователя/Логин" value='.$ses["username"].' required></p>');
+                        } 
+                        $querypas = pg_query($connection,"SELECT pwd FROM users WHERE login = '$login'");
+                        echo ('<p><b>Пароль</b><br>');
+                        while($pwd = pg_fetch_assoc($querypas)){
+                            echo ('<input class="form-control" style="font-size: 18px;" type="password" id="pwdseting" name="pwdseting" placeholder="Пароль" value='.$pwd["pwd"].' required></p>');
+                        }
+                        $querymail = pg_query($connection,"SELECT email FROM users WHERE login = '$login'");
+                        echo ('<p><b>Почта</b><br>');
+                        while($email = pg_fetch_assoc($querymail)){
+                            echo ('<input class="form-control" style="font-size: 18px;" type="text" id="emailseting" name="emailseting" placeholder="Почта" required value='.$email["email"].'></p>');
+                        }
+                        echo ('<p><b>Привелегии</b><br>');
+                        echo ('<select id="privelegeseting" name="usersfromdb" disabled>');
+                        $queryses = pg_query($connection,"SELECT username FROM sessions WHERE ip = '$ip'");
+                        while($ses = pg_fetch_assoc($queryses)){
+                            $nameses = $ses['username'];
+                        }
+                        $queryname = pg_query($connection,"SELECT privelege FROM users WHERE login = '$nameses'");
+                        while($n = pg_fetch_assoc($queryname)){
+                            $name = $n["privelege"];
+                        }
+                        $queryprivelege = pg_query($connection,"SELECT privelegename FROM priveleges WHERE id='$name'");
+                        while ($row = pg_fetch_assoc($queryprivelege)){
+                            echo("<option value=".$row['privelegename'].">".$row['privelegename']."</option>");
+                        }
+                        echo ('</select></p>');
+                    ?>
                     <button type="button" class="btn btn-primary text-center" style="border-radius: 15px;" id="savesettings" name="savesettings">Сохранить</button> <!--обработчик с занесением с бд-->
                 </form>
             </div>
@@ -214,7 +231,25 @@
                     } else { $("#usernamesettings").text(data); }
                 });
              });
-
+             setTimeout(function(){
+                $.ajax({
+                    url: "../php/exit.php",
+                    type: "POST",
+                    cache: false,
+                    data: {},
+                    dataType: "html",
+                    beforeSend: function(){
+                        $("#exit").prop("disabled", true);
+                    },
+                    success: function(data){
+                        if (data == "ok"){
+                            console.log(data);
+                            location = "../index.html";
+                            return true;
+                        }
+                    }
+                });
+            }, 600000);
          </script>
     </body>
 </html>

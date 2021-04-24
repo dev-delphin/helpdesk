@@ -67,9 +67,9 @@ CREATE TABLE tasks(
 	id SERIAL PRIMARY KEY NOT NULL,
 	theme VARCHAR(255) NOT NULL,
     descriptions VARCHAR (255) NOT NULL,
-    publisher INT REFERENCES users (id), --NOT NULL,
+    publisher varchar NOT NULL,
     termdate  DATE,
-    createdate DATE,--NOT NULL
+    createdate DATE NOT NULL,
     responsible VARCHAR,
     stage INT REFERENCES stage (id) ON DELETE CASCADE,
     editdate DATE,

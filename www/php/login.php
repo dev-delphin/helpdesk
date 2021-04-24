@@ -11,7 +11,7 @@
             $ip = $_SERVER['REMOTE_ADDR'];
             $queryinsert = pg_query($connection,"INSERT INTO sessions (username, ip) VALUES ('$id','$ip')");              
             echo "login";
-        }
+        } else {echo "error";}
     } else {
         echo "error";
         exit;
