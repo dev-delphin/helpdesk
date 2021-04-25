@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
     <head>
-        <meta http-equiv="Content-Type" content="text/html"; charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html;" charset="ru_RU.UTF-8">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
         <link rel="stylesheet" href="../css/modalsettings.css">
@@ -35,45 +35,66 @@
                 </div>
                 <br><br><br>
                 <div>
-                    <table class="table table-bordered" id="tasktable">
-                        <thead class="thead-inverse">
-                            <tr>
-                                <th>#</th>
-                                <th>Тема</th>
-                                <th>Описание</th>
-                                <th>Публикатор</th>
-                                <th>Сдать до</th>
-                                <th>Создано</th>
-                                <th>Ответсвенный</th>
-                                <th>Стадия</th>
-                                <th>Редактировано</th>
-                                <th>Завершено</th>
-                                <th>Действие</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                                require '../php/connection.php';
-                                require '../php/config.php';
-                                $tasksfromdb = pg_query($connection, "SELECT * FROM tasks JOIN stage ON tasks.stage=stage.id;");
-
-                                while($areatasks = pg_fetch_array($tasksfromdb)){
-                                echo    "<tr>
-                                <td>".$areatasks['id']."</td>
-                                <td width=10%>".$areatasks['theme']."</td>
-                                <td width=25%>".$areatasks['descriptions']."</td>
-                                <td>".$areatasks['publisher']."</td>
-                                <td>".$areatasks['termdate']."</td>
-                                <td>".$areatasks['createdate']."</td>
-                                <td>".$areatasks['responsible']."</td>
-                                <td>".$areatasks['stage']."</td>
-                                <td>".$areatasks['editdate']."</td>
-                                <td>".$areatasks['finishdate']."</td>
-                                <td><button type='button' name='taketask' id=".$areatasks['id']." class='btn btn-warning text-center' style='border-radius: 15px;'>Взять задачу</button></td>
-                                </tr>";
-                            } ?>
-                        </tbody>
-                    </table>
+                    <form method="POST">
+                        <table class="table table-bordered" id="tasktable">
+                            <thead class="thead-inverse">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Тема</th>
+                                    <th>Описание</th>
+                                    <th>Публикатор</th>
+                                    <th>Сдать до</th>
+                                    <th>Создано</th>
+                                    <th>Ответсвенный</th>
+                                    <th>Стадия</th>
+                                    <th>Принято</th>
+                                    <th>Завершено</th>
+                                    <th>Действие</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!--SELECT * FROM tasks JOIN stage ON tasks.stage=stage.id-->
+                                <?php
+                                    require '../php/connection.php';
+                                    require '../php/config.php';
+                                    $tasksfromdb = pg_query($connection, "SELECT * FROM tasks;");
+                                    while($areatasks = pg_fetch_array($tasksfromdb)){
+                                    echo    "<tr>
+                                    <td>".$areatasks['id']."</td>
+                                    <td width=10%>".$areatasks['theme']."</td>
+                                    <td width=25%>".$areatasks['descriptions']."</td>
+                                    <td>".$areatasks['publisher']."</td>
+                                    <td>".$areatasks['termdate']."</td>
+                                    <td>".$areatasks['createdate']."</td>
+                                    <td>".$areatasks['responsible']."</td>";
+                                    if ($areatasks['stage'] == 1){
+                                        echo('<td>Не начато</td>');
+                                    }else if($areatasks['stage'] == 2){
+                                        echo('<td>В процессе</td>');
+                                    }else{
+                                        echo('<td>Завершено</td>');
+                                    }
+                                    echo "
+                                    <td>".$areatasks['editdate']."</td>
+                                    <td>".$areatasks['finishdate']."</td>";
+                                    if ($areatasks['stage'] == 1 && $areatasks['responsible'] != ''){
+                                        echo("<td><button type='button' name='taketask' id=".$areatasks['id']." class='btn btn-info text-center' style='border-radius: 15px;' onclick='getdetail(this)'>Подтвердить</button></td>");
+                                    } else if ($areatasks['stage'] == 1){
+                                        echo("<td><button type='button' name='taketask' id=".$areatasks['id']." class='btn btn-warning text-center' style='border-radius: 15px;' onclick='getdetail(this)'>Взять задачу</button></td>");
+                                    } else if ($areatasks['stage'] == 2){
+                                        echo("<td><button type='button' name='taketask' id=".$areatasks['id']." class='btn btn-success text-center' style='border-radius: 15px;' onclick='getdetail(this)'>Завершить задачу</button></td>");
+                                    } else { echo ("<td><p>Задача завешена</p></td>");}
+                                    if (isset($_POST[$areatasks['id']])){
+                                        $qwe = pg_query($connection, "select * from users;");
+                                        while ($q = pg_fetch_assoc($qwe)){
+                                            echo ("$q");
+                                        } 
+                                    }
+                                    echo("</tr>");
+                                } ?>
+                            </tbody>
+                        </table>
+                    </form>
                 </div>
                 <div><p class='text-center' style='font-size: 25px;' id="error"></p></div>
             </div>
@@ -188,6 +209,7 @@
          <script type="text/javascript" src="../js/modalsettings.js"></script>
          <script type="text/javascript" src="../js/insterttask.js"></script>
          <script type="text/javascript" src="../js/createuser.js"></script>
+         <script type="text/javascript" src="../js/docreadexit.js"></script>
          <script>
             function CheckTerm(checkterm) {
                 var termdate = document.getElementById("termdate");
@@ -203,35 +225,29 @@
                     usersfromdb.focus();
                 }
             }
-            $("#exit").on("click", function(){
+            function getdetail(obj){
+                //console.log(obj.id);
+                var id = obj.id;
                 $.ajax({
-                    url: "../php/exit.php",
+                    url: "../php/updatetasks.php",
                     type: "POST",
                     cache: false,
-                    data: {},
+                    data: {"id": id},
                     dataType: "html",
                     beforeSend: function(){
-                        $("#exit").prop("disabled", true);
                     },
                     success: function(data){
-                        if (data == "ok"){
-                            console.log(data);
-                            location = "../index.html";
-                            return true;
+                        if (data == "error"){
+                            alert("Вы не можете взять, завершить или подтвердить эту задачу");
+                            $("#tasktable").load("tasks.html #tasktable");
+                        } else {
+                            $("#tasktable").load("tasks.html #tasktable");
                         }
-                    }
+                    } 
                 });
-            });
+            }
             // чтение привелегии пользователя и сохраенние ее в переменную и провека каждый раз
-            $(document).ready(function() {
-                $.get("../php/checkauthtask.php", function(data){
-                    if (data == "nook"){
-                        location = "../index.html";
-                        return true;
-                    } else { $("#usernamesettings").text(data); }
-                });
-             });
-             setTimeout(function(){
+            setTimeout(function(){
                 $.ajax({
                     url: "../php/exit.php",
                     type: "POST",
