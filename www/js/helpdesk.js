@@ -23,12 +23,6 @@ $(document).ready(function() { // зaпускaем скрипт пoсле зaг�
         }
         );
     });
-    $.get("../php/checkauthtask.php", function(data){
-        if (data == "nook"){
-            location = "../index.html";
-            return true;
-        } else { $("#usernamesettings").text(data); }
-    });
     // чтение привелегии пользователя и сохраенние ее в переменную и провека каждый раз
 });
 $("#exit").on("click", function(){
@@ -129,6 +123,7 @@ $("#savetask").on("click", function(){
         $("#termdate").prop("disabled", true);
         $("#usersfromdb").prop("disabled", true);
         $("#tasktable").load("tasks.html #tasktable"); // refresh table
+        $("#statistic").load("tasks.html #statistic");
     });
 });
 $("#createuser").on("click", function(){
@@ -225,6 +220,7 @@ function getdetail(obj){
                 $("#tasktable").load("tasks.html #tasktable");
             } else {
                 $("#tasktable").load("tasks.html #tasktable");
+                $("#statistic").load("tasks.html #statistic");
             }
         } 
     });
