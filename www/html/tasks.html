@@ -4,13 +4,7 @@
         <meta http-equiv="Content-Type" content="text/html;" charset="ru_RU.UTF-8">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
-        <link rel="stylesheet" href="../css/modalsettings.css">
-        <style>
-            .center{
-                display: block; 
-                margin: 0 auto;
-            }
-        </style>
+        <link rel="stylesheet" href="../css/styles.css">
     </head>
     <body>
         <div class="container-fluid">
@@ -129,7 +123,6 @@
                 </form>
             </div>
         </div>
-        <!-- вывод в поля данных из БД-->
         <div id="modalsettings" class="modal_div">
             <div class="center">
                 <span class="modal_close">X</span>
@@ -206,66 +199,6 @@
          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
          <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU" crossorigin="anonymous"></script>
          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj" crossorigin="anonymous"></script>        
-         <script type="text/javascript" src="../js/modalsettings.js"></script>
-         <script type="text/javascript" src="../js/insterttask.js"></script>
-         <script type="text/javascript" src="../js/createuser.js"></script>
-         <script type="text/javascript" src="../js/docreadexit.js"></script>
-         <script>
-            function CheckTerm(checkterm) {
-                var termdate = document.getElementById("termdate");
-                termdate.disabled = checkterm.checked ? false : true;
-                if (!termdate.disabled) {
-                    termdate.focus();
-                }
-            }
-            function CheckResponsible(checkresponsible) {
-                var usersfromdb = document.getElementById("usersfromdb");
-                usersfromdb.disabled = checkresponsible.checked ? false : true;
-                if (!usersfromdb.disabled) {
-                    usersfromdb.focus();
-                }
-            }
-            function getdetail(obj){
-                //console.log(obj.id);
-                var id = obj.id;
-                $.ajax({
-                    url: "../php/updatetasks.php",
-                    type: "POST",
-                    cache: false,
-                    data: {"id": id},
-                    dataType: "html",
-                    beforeSend: function(){
-                    },
-                    success: function(data){
-                        if (data == "error"){
-                            alert("Вы не можете взять, завершить или подтвердить эту задачу");
-                            $("#tasktable").load("tasks.html #tasktable");
-                        } else {
-                            $("#tasktable").load("tasks.html #tasktable");
-                        }
-                    } 
-                });
-            }
-            // чтение привелегии пользователя и сохраенние ее в переменную и провека каждый раз
-            setTimeout(function(){
-                $.ajax({
-                    url: "../php/exit.php",
-                    type: "POST",
-                    cache: false,
-                    data: {},
-                    dataType: "html",
-                    beforeSend: function(){
-                        $("#exit").prop("disabled", true);
-                    },
-                    success: function(data){
-                        if (data == "ok"){
-                            console.log(data);
-                            location = "../index.html";
-                            return true;
-                        }
-                    }
-                });
-            }, 600000);
-         </script>
+         <script type="text/javascript" src="../js/helpdeks.js"></script>
     </body>
 </html>

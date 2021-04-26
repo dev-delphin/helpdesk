@@ -39,3 +39,7 @@
     cursor:pointer;
     display:none; /* в oбычнoм сoстoянии её нет) */
  }
+.center{
+   display: block; 
+   margin: 0 auto;
+}
