@@ -244,6 +244,14 @@
                         return true;
                     } else { $("#usernamesettings").text(data); }
                 });
+                $.get("../php/checkpriveleges.php", function(data){
+                    console.log(data);
+                    if (data == "2"){
+                        $("#creteuser").prop("disabled", true);
+                        $("#createtask").prop("disabled", true);
+                        return true;
+                    }
+                });
             });
          </script>
     </body>

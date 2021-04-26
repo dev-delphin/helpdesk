@@ -14,7 +14,7 @@ CREATE TABLE priveleges(
 );
 -- defaul priveges --
 INSERT INTO priveleges (id, privelegename, privelegevalue) VALUES (1, 'Disabled', 0);
-INSERT INTO priveleges (id, privelegename, privelegevalue) VALUES (2, 'SuperAdministrator', 3);
+INSERT INTO priveleges (id, privelegename, privelegevalue) VALUES (2, 'SuperAdministrator', 1);
 INSERT INTO priveleges (id, privelegename, privelegevalue) VALUES (3, 'Administrator', 2);
 
 ----------------------------------------------------------
