@@ -15,19 +15,28 @@
                     <?php 
                         require '../php/connection.php';
                         require '../php/config.php';
+                        $date = date("d.m.Y");
+                        $count_expired_stage = 0;
                         $all_tasks = pg_query($connection, "SELECT COUNT(*) FROM tasks;");
                         while ($cnt = pg_fetch_assoc($all_tasks)){
                             $count_tasks = $cnt['count'];
                         }
-                        $expired_tasks = pg_query($connection, "SELECT COUNT(*) FROM tasks where termdate < finishdate;");
+                        $expired_tasks = pg_query($connection, "SELECT COUNT(*) FROM tasks WHERE termdate < finishdate;");
                         while ($cnt = pg_fetch_assoc($expired_tasks)){
                             $count_expired = $cnt['count'];
                         }
-                        $on_time_tasks = pg_query($connection, "SELECT COUNT(*) FROM tasks where termdate > finishdate OR termdate = finishdate;");
+                        $expired_tasks_stage = pg_query($connection, "SELECT termdate FROM tasks WHERE stage = '1' OR stage = '2';");
+                        while ($cnt = pg_fetch_assoc($expired_tasks_stage)){
+                            if ($cnt['termdate'] > $date){
+                                $count_expired_stage = $count_expired_stage + 1;
+                            }
+                        }
+                        $count_expired_tasks = $count_expired + $count_expired_stage;
+                        $on_time_tasks = pg_query($connection, "SELECT COUNT(*) FROM tasks WHERE termdate > finishdate OR termdate = finishdate;");
                         while ($cnt = pg_fetch_assoc($on_time_tasks)){
                             $count_on_time = $cnt['count'];
                         }
-                        echo ("<p style='white-space: pre-wrap;'>Всего заданий: <b>".$count_tasks."</b>    Просроченно заданий: <b>".$count_expired."</b>    Выполнено в срок: <b>".$count_on_time."</b></p>");
+                        echo ("<p style='white-space: pre-wrap;'>Всего заданий: <b>".$count_tasks."</b>    Просроченно заданий: <b>".$count_expired_tasks."</b>    Выполнено в срок: <b>".$count_on_time."</b></p>");
                         $no_started_tasks = pg_query($connection, "SELECT COUNT(*) FROM tasks WHERE stage = '1';");
                         while ($cnt = pg_fetch_assoc($no_started_tasks)){
                             $count_no_started = $cnt['count'];
