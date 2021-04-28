@@ -71,7 +71,7 @@
                                 <th>Публикатор</th>
                                 <th>Сдать до</th>
                                 <th>Создано</th>
-                                <th>Ответсвенный</th>
+                                <th>Ответственный</th>
                                 <th>Стадия</th>
                                 <th>Принято</th>
                                 <th>Завершено</th>
@@ -137,11 +137,11 @@
                     <input class="form-control" style="font-size: 18px;" type="text" id="theme" name="theme" placeholder="Тема" required /></p>
                     <p><b>Описание</b><br>
                     <input class="form-control" style="font-size: 18px;" type="text" id="descriptions" name="descriptions" placeholder="Описание" required /></p>
-                    <p><b>Cрок "целове число"</b><br>
+                    <p><b>Cрок "целое число"</b><br>
                     <input style="font-size: 18px;" type="checkbox" id="checkterm" name="checkterm" onclick="CheckTerm(this)"/>
                     <!--<input type="date" id="termdate" name="termdate" disabled/></p>-->
                     <input type="text" id="termdate" name="termdate" disabled/> Дней</p>
-                    <p><b>Назначить отвественного</b><br>
+                    <p><b>Назначить ответственного</b><br>
                     <input  type="checkbox" id="checkresponsible" name="checkresponsible" onclick="CheckResponsible(this)"/>
                     <select id="usersfromdb" name="usersfromdb" disabled>
                         <?php
@@ -183,7 +183,7 @@
                         while($email = pg_fetch_assoc($querymail)){
                             echo ('<input class="form-control" style="font-size: 18px;" type="text" id="emailseting" name="emailseting" placeholder="Почта" required value='.$email["email"].'></p>');
                         }
-                        echo ('<p><b>Привелегии</b><br>');
+                        echo ('<p><b>Привилегии</b><br>');
                         echo ('<select id="privelegeseting" name="usersfromdb" disabled>');
                         $queryses = pg_query($connection,"SELECT username FROM sessions WHERE ip = '$ip'");
                         while($ses = pg_fetch_assoc($queryses)){
@@ -213,7 +213,7 @@
                     <input class="form-control" style="font-size: 18px;" type="password" id="pwdcreate" name="pwdcreate" placeholder="Пароль" required></p>
                     <p><b>Почта</b><br>
                     <input class="form-control" style="font-size: 18px;" type="text" id="emailcreate" name="emailcreate" placeholder="Почта" required></p>
-                    <p><b>Привелегии</b><br>
+                    <p><b>Привилегии</b><br>
                     <select id="privelegecreate" name="usersfromdb">
                         <?php
                             require '../php/connection.php';
