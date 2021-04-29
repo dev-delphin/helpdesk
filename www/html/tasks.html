@@ -31,7 +31,6 @@
                                 $count_expired_stage = $count_expired_stage + 1;
                             }
                         }
-                        
                         $on_time_tasks = pg_query($connection, "SELECT COUNT(*) FROM tasks WHERE termdate > finishdate OR termdate = finishdate;");
                         while ($cnt = pg_fetch_assoc($on_time_tasks)){
                             $count_on_time = $cnt['count'];
