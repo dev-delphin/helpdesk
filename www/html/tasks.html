@@ -31,12 +31,12 @@
                                 $count_expired_stage = $count_expired_stage + 1;
                             }
                         }
-                        $count_expired_tasks = $count_expired + $count_expired_stage;
+                        
                         $on_time_tasks = pg_query($connection, "SELECT COUNT(*) FROM tasks WHERE termdate > finishdate OR termdate = finishdate;");
                         while ($cnt = pg_fetch_assoc($on_time_tasks)){
                             $count_on_time = $cnt['count'];
                         }
-                        echo ("<p style='white-space: pre-wrap;'>Всего заданий: <b>".$count_tasks."</b>    Просроченно заданий: <b>".$count_expired_tasks."</b>    Выполнено в срок: <b>".$count_on_time."</b></p>");
+                        echo ("<p style='white-space: pre-wrap;'>Всего заданий: <b>".$count_tasks."</b>    Выполнено с задержкой: <b>".$count_expired."</b>    Выполнено в срок: <b>".$count_on_time."</b>    Просрочено заданий:<b>".$count_expired_stage."</b></p>");
                         $no_started_tasks = pg_query($connection, "SELECT COUNT(*) FROM tasks WHERE stage = '1';");
                         while ($cnt = pg_fetch_assoc($no_started_tasks)){
                             $count_no_started = $cnt['count'];
