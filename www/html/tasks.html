@@ -9,7 +9,7 @@
             .thead-black{
                 background: rgb(212, 212, 212);
             }
-            body {
+            body, .rgbgradient {
                 background: rgb(185,139,0);
                 background: linear-gradient(90deg, rgba(185,139,0,1) 0%, rgba(0,167,167,1) 50%, rgba(156,1,156,1) 100%);
             }
@@ -71,8 +71,8 @@
                         <button type="button" name="settings" id="settings" class="btn btn-primary text-center" style="border-radius: 15px;">
                            <a href="#modalsettings" class="open_modal" style="color:white; text-decoration: none;"><b style="font-size: 15px;" id="usernamesettings"></b></a>
                         </button>
-                        <button type="button" name="creteuser" id="creteuser" class="btn btn-primary text-center" style="border-radius: 15px;">
-                            <a href="#modalcreteuser" class="open_modal" style="color:white; text-decoration: none;"><b style="font-size: 15px;">Создать пользователя</b></a>
+                        <button type="button" name="usersetings" id="usersetings" class="btn btn-primary text-center" style="border-radius: 15px;">
+                            <a href="usersetings.html"  style="color:white; text-decoration: none;"><b style="font-size: 15px;">Пользователи</b></a>
                         </button>
                         <button type="button" name="exit" id="exit" class="btn btn-primary text-center" style="border-radius: 15px;">
                             <b>Выйти</b>
@@ -195,7 +195,7 @@
                 <div><p class='text-center' style='font-size: 25px;' id="error"></p></div>
             </div>
         </div>
-        <div id="modalcreatetasks" class="modal_div">
+        <div id="modalcreatetasks" class="modal_div rgbgradient">
             <div class="center">
                 <span class="modal_close">X</span>
                 <form id='createtaskform' method="POST">
@@ -225,7 +225,7 @@
                 </form>
             </div>
         </div>
-        <div id="modalsettings" class="modal_div">
+        <div id="modalsettings" class="modal_div rgbgradient">
             <div class="center">
                 <span class="modal_close">X</span>
                 <form method="POST">
@@ -269,33 +269,6 @@
                 </form>
             </div>
         </div>
-        <div id="modalcreteuser" class="modal_div">
-            <div class="center">
-                <span class="modal_close">X</span>
-                <form id="formcreateuser" method="POST">
-                    <p><b>Имя пользователя/Логин</b>
-                    <input class="form-control" style="font-size: 18px;" type="text" id="logincreate" name="logincreate" placeholder="Имя пользователя/Логин" required></p>
-                    <p><b>Пароль</b><br>
-                    <input class="form-control" style="font-size: 18px;" type="password" id="pwdcreate" name="pwdcreate" placeholder="Пароль" required></p>
-                    <p><b>Почта</b><br>
-                    <input class="form-control" style="font-size: 18px;" type="text" id="emailcreate" name="emailcreate" placeholder="Почта" required></p>
-                    <p><b>Привилегии</b><br>
-                    <select id="privelegecreate" name="usersfromdb">
-                        <?php
-                            require '../php/connection.php';
-                            require '../php/config.php';
-                            $queryprivelege = pg_query($connection,"SELECT privelegename FROM priveleges");
-                            $i = 0;
-                            while ($row = pg_fetch_assoc($queryprivelege))
-                            {
-                                echo("<option value=".$row['privelegename'].">".$row['privelegename']."</option>");
-                            }
-                        ?>
-                    </select></p>
-                    <button type="button" class="btn btn-primary text-center" style="border-radius: 15px;" id="createuser" name="createuser">Создать</button> <!--обработчик с занесением с бд-->
-                </form>
-            </div>
-         </div>
          <div id="overlay"></div>
          <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
@@ -313,7 +286,7 @@
                 $.get("../php/checkpriveleges.php", function(data){
                     console.log(data);
                     if (data == "2"){
-                        $("#creteuser").prop("disabled", true);
+                        $("#usersetings").prop("disabled", true);
                         $("#createtask").prop("disabled", true);
                         return true;
                     }

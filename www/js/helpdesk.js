@@ -132,12 +132,13 @@ $("#createuser").on("click", function(){
     var password = $("#pwdcreate").val();
     var email= $("#emailcreate").val();
     var privelege = $("#privelegecreate").val();
+    var description = $("#descriptioncreate").val();
     console.log(privelege);
     $.ajax({
         url: "../php/insertusers.php",
         type: "POST",
         cache: false,
-        data: {"login": login, "password": password, "email": email, "privelege": privelege},
+        data: {"login": login, "password": password, "email": email, "privelege": privelege, "description": description},
         dataType: "html",
         beforeSend: function(){
             $("#createuser").prop("disabled", true);

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html"; charset="utf-8">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+        <link rel="stylesheet" href="../css/styles.css">
+        <style>
+            body {
+                background: rgb(185,139,0);
+                background: linear-gradient(90deg, rgba(185,139,0,1) 0%, rgba(0,167,167,1) 50%, rgba(156,1,156,1) 100%);
+            }
+            .modal_div {
+                width: 350px;
+                height: 500px; /* Рaзмеры дoлжны быть фиксирoвaны */
+                border-radius: 5px;
+                border: 3px #000 solid;
+                background: #fff;
+                position: fixed; /* чтoбы oкнo былo в видимoй зoне в любoм месте */
+                top: 45%; /* oтступaем сверху 45%, oстaльные 5% пoдвинет скрипт */
+                left: 50%; /* пoлoвинa экрaнa слевa */
+                margin-top: -150px;
+                margin-left: -150px; /* oтступaем влевo и вверх минус пoлoвину ширины и высoты сooтветственнo */
+                display: none; /* в oбычнoм сoстoянии oкнa не дoлжнo быть */
+                opacity: 0; /* пoлнoстью прoзрaчнo для aнимирoвaния */
+                z-index: 5; /* oкнo дoлжнo быть нaибoлее бoльшем слoе */
+                padding: 20px 10px;
+            }
+            /* Кнoпкa зaкрыть для тех ктo в тaнке) */
+            .modal_close {
+                width: 21px;
+                height: 21px;
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                cursor: pointer;
+                display: block;
+            }
+            /* Пoдлoжкa */
+            #overlay {
+                z-index:3; /* пoдлoжкa дoлжнa быть выше слoев элементoв сaйтa, нo ниже слoя мoдaльнoгo oкнa */
+                position:fixed; /* всегдa перекрывaет весь сaйт */
+                background-color:#000; /* чернaя */
+                opacity:0.8; /* нo немнoгo прoзрaчнa */
+                -moz-opacity:0.8; /* фикс прозрачности для старых браузеров */
+                filter:alpha(opacity=80);
+                width:100%;
+                height:100%; /* рaзмерoм вo весь экрaн */
+                top:0; /* сверху и слевa 0, oбязaтельные свoйствa! */
+                left:0;
+                cursor:pointer;
+                display:none; /* в oбычнoм сoстoянии её нет) */
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-xl-12"><br><br></div>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-xl-12 center" style="border: 2px solid #26d368; border-radius: 15px;">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-xl-12 center" style="padding: 15px;">
+                    <div>
+                        <button type="button" class="btn btn-primary text-center" style="border-radius: 15px;">
+                            <a href="tasks.html" style="color:white; text-decoration: none;"><b style="font-size: 15px;">На главную</b></a>
+                        </button>
+                        <button type="button" name="creteuser" id="creteuser" class="btn btn-primary text-center" style="border-radius: 15px;">
+                        <a href="#modalcreteuser" class="open_modal" style="color:white; text-decoration: none;"><b style="font-size: 15px;">Создать пользователя</b></a>
+                        </button>
+                    </div>
+                    <p></p>
+                    <div>
+                        <table class="table table-bordered table-hover table-sm" id="usersetings">
+                            <thead style="background: rgb(247,243,195);
+                            background: linear-gradient(45deg, rgba(247,243,195,1) 0%, rgba(163,255,255,1) 50%, rgba(255,185,255,1) 100%);">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Логин</th>
+                                    <th>Описание</th>
+                                    <th>Уровень доступа</th>
+                                    <th>Действие</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                    require '../php/connection.php';
+                                    require '../php/config.php';
+                                    $date = date("d.m.Y");
+                                    $ip = $_SERVER['REMOTE_ADDR'];
+                                    $count = pg_query($connection, "SELECT COUNT(*) FROM users;");
+                                    while ($cnt = pg_fetch_array($count)){
+                                        $users = pg_query($connection, "SELECT * FROM users;");
+                                        while($user = pg_fetch_array($users)){
+                                            $priv = pg_query($connection, "SELECT privelege FROM users WHERE login='$user[login]';");
+                                            while($privel = pg_fetch_array($priv)){
+                                                $privelege = pg_query($connection, "SELECT privelegename FROM priveleges WHERE id='$privel[privelege]';");
+                                                while($privel = pg_fetch_array($privelege)){
+                                                    $privelegev = $privel['privelegename'];
+                                                    echo("<form method='post'><tr><th>".$user['id']."</th><td>".$user['login']."</td><td>".$user['description']."</td><td>".$privel['privelegename']."</td>");
+                                                    echo("<td><button type='button' name='edit' id=".$cnt['count']." class='btn btn-info text-center' style='border-radius: 15px;'>
+                                                        <a href='#modalcreteuserq' class='open_modal' style='color:white; text-decoration: none;'><b style='font-size: 15px;'>Редактировать</b></a>
+                                                        </button></td>");
+                                                    echo("</tr></form>");
+                                                }
+                                            }
+                                        }
+                                    }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="modalcreteuser" class="modal_div rgbgradient">
+                    <div class="center">
+                        <span class="modal_close">X</span>
+                        <form id="formcreateuser" method="POST">
+                            <p><b>Имя пользователя/Логин</b>
+                            <input class="form-control" style="font-size: 18px;" type="text" id="logincreate" name="logincreate" placeholder="Имя пользователя/Логин" required></p>
+                            <p><b>Пароль</b><br>
+                            <input class="form-control" style="font-size: 18px;" type="password" id="pwdcreate" name="pwdcreate" placeholder="Пароль" required></p>
+                            <p><b>Почта</b><br>
+                            <input class="form-control" style="font-size: 18px;" type="text" id="emailcreate" name="emailcreate" placeholder="Почта" required></p>
+                            <p><b>Привилегии</b><br>
+                            <select id="privelegecreate" name="usersfromdb">
+                                <?php
+                                    require '../php/connection.php';
+                                    require '../php/config.php';
+                                    $queryprivelege = pg_query($connection,"SELECT privelegename FROM priveleges");
+                                    $i = 0;
+                                    while ($row = pg_fetch_assoc($queryprivelege))
+                                    {
+                                        echo("<option value=".$row['privelegename'].">".$row['privelegename']."</option>");
+                                    }
+                                ?>
+                            </select></p>
+                            <p><b>Описание</b><br>
+                            <input class="form-control" style="font-size: 18px;" type="text" id="descriptioncreate" name="descriptioncreate" placeholder="Описание"></p>
+                            <button type="button" class="btn btn-primary text-center" style="border-radius: 15px;" id="createuser" name="createuser">Создать</button> <!--обработчик с занесением с бд-->
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div id="overlay"></div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj" crossorigin="anonymous"></script>        
+        <script type="text/javascript" src="../js/helpdesk.js"></script>
+        <script type="text/javascript">
+            $("#password").keyup(function(e){
+                if (e.keyCode == 13){
+                    $("#dologin").click();
+                    $(this).val('')
+                }
+            });
+            $(document).ready(function(){
+                $.get("../php/checkauthtask.php", function(data){
+                    if (data == "nook"){
+                        location = "../index.html";
+                        return true;
+                    } else { $("#usernamesettings").text(data); }
+                });
+                $.get("../php/checkpriveleges.php", function(data){
+                    console.log(data);
+                    if (data == "2"){
+                        location = "../index.html";
+                        return true;
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
