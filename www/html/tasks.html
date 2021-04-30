@@ -5,11 +5,20 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
         <link rel="stylesheet" href="../css/styles.css">
+        <style>
+            .thead-black{
+                background: rgb(212, 212, 212);
+            }
+            body {
+                background: rgb(185,139,0);
+                background: linear-gradient(90deg, rgba(185,139,0,1) 0%, rgba(0,167,167,1) 50%, rgba(156,1,156,1) 100%);
+            }
+        </style>
     </head>
     <body>
         <div class="container-fluid">
             <div><p class='text-center' style='font-size: 25px; text-decoration-color: brown;' id="error"></p></div><br>
-            <div class="col-xs-12 col-sm-12 col-md-12 col-xl-12 center" style="border: 2px solid #26d368; border-radius: 15px;">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-xl-12 center" >
                 <br>
                 <div style="float:left;" id="statistic">
                     <?php 
@@ -27,15 +36,17 @@
                         }
                         $expired_tasks_stage = pg_query($connection, "SELECT termdate FROM tasks WHERE stage = '1' OR stage = '2';");
                         while ($cnt = pg_fetch_assoc($expired_tasks_stage)){
-                            if ($cnt['termdate'] > $date){
-                                $count_expired_stage = $count_expired_stage + 1;
+                            if ($cnt['termdate'] != 0){
+                                if (strtotime($cnt['termdate']) < strtotime($date)){
+                                    $count_expired_stage = $count_expired_stage + 1;
+                                }
                             }
                         }
                         $on_time_tasks = pg_query($connection, "SELECT COUNT(*) FROM tasks WHERE termdate > finishdate OR termdate = finishdate;");
                         while ($cnt = pg_fetch_assoc($on_time_tasks)){
                             $count_on_time = $cnt['count'];
                         }
-                        echo ("<p style='white-space: pre-wrap;'>Всего заданий: <b>".$count_tasks."</b>    Выполнено с задержкой: <b>".$count_expired."</b>    Выполнено в срок: <b>".$count_on_time."</b>    Просрочено заданий:<b>".$count_expired_stage."</b></p>");
+                        echo ("<p style='white-space: pre-wrap; color:rgb(255, 255, 255);'>Всего заданий: <b>".$count_tasks."</b>    Выполнено с задержкой: <b>".$count_expired."</b>    Выполнено в срок: <b>".$count_on_time."</b>    Просрочено заданий:<b>".$count_expired_stage."</b></p>");
                         $no_started_tasks = pg_query($connection, "SELECT COUNT(*) FROM tasks WHERE stage = '1';");
                         while ($cnt = pg_fetch_assoc($no_started_tasks)){
                             $count_no_started = $cnt['count'];
@@ -48,7 +59,7 @@
                         while ($cnt = pg_fetch_assoc($end_tasks)){
                             $count_finished = $cnt['count'];
                         }
-                        echo ("<p style='white-space: pre-wrap;'>Не начато заданий: <b>".$count_no_started."</b>    Заданий в процессе: <b>".$count_processed."</b>    Завершено заданий: <b>".$count_finished."</b></p>");
+                        echo ("<p style='white-space: pre-wrap; color:rgb(255, 255, 255);'>Не начато заданий: <b>".$count_no_started."</b>    Заданий в процессе: <b>".$count_processed."</b>    Завершено заданий: <b>".$count_finished."</b></p>");
                         
                     ?>
                 </div>
@@ -70,8 +81,9 @@
                 </div>
                 <br><br><br>
                 <div>
-                    <table class="table table-bordered" id="tasktable">
-                        <thead class="thead-inverse">
+                    <table class="table table-bordered table-hover table-sm" id="tasktable">
+                        <thead style="background: rgb(247,243,195);
+                        background: linear-gradient(45deg, rgba(247,243,195,1) 0%, rgba(163,255,255,1) 50%, rgba(255,185,255,1) 100%);">
                             <tr>
                                 <th>#</th>
                                 <th>Тема</th>
@@ -90,10 +102,56 @@
                             <?php
                                 require '../php/connection.php';
                                 require '../php/config.php';
-                                $tasksfromdb = pg_query($connection, "SELECT * FROM tasks;");
+                                $date = date("d.m.Y");
+                                $ip = $_SERVER['REMOTE_ADDR'];
+                                $userandprivelege = pg_query($connection, "SELECT username FROM sessions WHERE ip='$ip';");
+                                while($user = pg_fetch_array($userandprivelege)){
+                                    $usern = $user['username'];
+                                }
+                                $privelege = pg_query($connection, "SELECT privelege FROM users JOIN priveleges ON login='$usern' LIMIT 1;");
+                                while($privel = pg_fetch_array($privelege)){
+                                    $privelegev = $privel['privelege'];
+                                }
+                                if ($privelegev == 3){
+                                    $tasksfromdb = pg_query($connection, "SELECT * FROM tasks WHERE responsible='$usern' or responsible IS NULL;");
+                                } else {
+                                    $tasksfromdb = pg_query($connection, "SELECT * FROM tasks;");
+                                }
                                 while($areatasks = pg_fetch_array($tasksfromdb)){
-                                echo    "<tr>
-                                <th>".$areatasks['id']."</th>
+                                    if (strtotime($areatasks['termdate']) != 0){
+                                        if ($areatasks['stage'] == '1'  && strtotime($areatasks['termdate']) < strtotime($date)){
+                                            echo("<tr style='background: rgb(255,27,27);
+                                            background: linear-gradient(45deg, rgba(255,27,27,0.798739564185049) 0%, rgba(255,153,153,1) 50%, rgba(255,221,221,1) 100%);'>");
+                                        } else if ($areatasks['stage'] == '1' && strtotime($areatasks['termdate']) >= strtotime($date)){
+                                            echo("<tr style=' background: rgb(157,240,228);
+                                            background: linear-gradient(45deg, rgba(0,176,247,1) 0%, rgba(86,220,230,1) 50%, rgba(157,240,228,1) 100%); '>");
+                                        } else if ($areatasks['stage'] == '2' && strtotime($areatasks['termdate']) < strtotime($date)){
+                                            echo("<tr style='background: rgb(255,27,27);
+                                            background: linear-gradient(45deg, rgba(255,27,27,0.798739564185049) 0%, rgba(255,153,153,1) 50%, rgba(255,221,221,1) 100%);'>");
+                                        } else if ($areatasks['stage'] == '2' && strtotime($areatasks['termdate']) >= strtotime($date)){
+                                            echo("<tr style='background: rgb(222,222,222);
+                                            background: linear-gradient(45deg, rgba(222,222,222,0.798739564185049) 0%, rgba(208,208,208,0.8071429255295868) 50%, rgba(193,193,193,1) 100%);'>");
+                                        } else if (($areatasks['stage'] == '3' && strtotime($areatasks['termdate']) <= strtotime($date))
+                                                    || ($areatasks['stage'] == '3' && strtotime($areatasks['termdate']) >= strtotime($date)) ){
+                                            echo("<tr style=' background: rgb(110,222,16);
+                                            background: linear-gradient(45deg, rgba(110,222,16,0.798739564185049) 0%, rgba(89,222,86,0.8071429255295868) 50%, rgba(53,233,125,1) 100%);'>");
+                                        }
+                                    } else if (strtotime($areatasks['termdate']) >= 0) {
+                                        if ($areatasks['stage'] == '1'){
+                                            echo("<tr style=' background: rgb(157,240,228);
+                                            background: linear-gradient(45deg, rgba(0,176,247,1) 0%, rgba(86,220,230,1) 50%, rgba(157,240,228,1) 100%); '>");
+                                        } else if ($areatasks['stage'] == '2'){
+                                            echo("<tr style='background: rgb(222,222,222);
+                                            background: linear-gradient(45deg, rgba(222,222,222,0.798739564185049) 0%, rgba(208,208,208,0.8071429255295868) 50%, rgba(193,193,193,1) 100%);'>");
+                                        } else if ($areatasks['stage'] == '3'){
+                                            echo("<tr style=' background: rgb(110,222,16);
+                                            background: linear-gradient(45deg, rgba(110,222,16,0.798739564185049) 0%, rgba(89,222,86,0.8071429255295868) 50%, rgba(53,233,125,1) 100%);'>");
+                                        }
+                                    }
+                                else {
+                                    echo("<tr>");
+                                }
+                                echo "<th>".$areatasks['id']."</th>
                                 <td width=10%>".$areatasks['theme']."</td>
                                 <td width=25%>".$areatasks['descriptions']."</td>
                                 <td>".$areatasks['publisher']."</td>";
@@ -179,7 +237,7 @@
                         echo ('<p><b>Имя пользователя/Логин</b>');
                         while($ses = pg_fetch_assoc($queryses)){
                             $login = $ses["username"];
-                            echo ('<input class="form-control" style="font-size: 18px;" type="text" id="loginseting" name="loginseting" placeholder="Имя пользователя/Логин" value='.$ses["username"].' required></p>');
+                            echo ('<input class="form-control" style="font-size: 18px;" type="text" id="loginseting" name="loginseting" placeholder="Имя пользователя/Логин" value='.$ses["username"].' required disabled></p>');
                         } 
                         $querypas = pg_query($connection,"SELECT pwd FROM users WHERE login = '$login'");
                         echo ('<p><b>Пароль</b><br>');
