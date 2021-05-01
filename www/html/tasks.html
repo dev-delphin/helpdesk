@@ -11,7 +11,7 @@
             }
             body, .rgbgradient {
                 background: rgb(185,139,0);
-                background: linear-gradient(90deg, rgba(185,139,0,1) 0%, rgba(0,167,167,1) 50%, rgba(156,1,156,1) 100%);
+                background: linear-gradient(90deg, #ffffff  0%, #abbaab  100%);  
             }
         </style>
     </head>
@@ -46,7 +46,7 @@
                         while ($cnt = pg_fetch_assoc($on_time_tasks)){
                             $count_on_time = $cnt['count'];
                         }
-                        echo ("<p style='white-space: pre-wrap; color:rgb(255, 255, 255);'>Всего заданий: <b>".$count_tasks."</b>    Выполнено с задержкой: <b>".$count_expired."</b>    Выполнено в срок: <b>".$count_on_time."</b>    Просрочено заданий:<b>".$count_expired_stage."</b></p>");
+                        echo ("<p style='white-space: pre-wrap;'>Всего заданий: <b>".$count_tasks."</b>    Выполнено с задержкой: <b>".$count_expired."</b>    Выполнено в срок: <b>".$count_on_time."</b>    Просрочено заданий:<b>".$count_expired_stage."</b></p>");
                         $no_started_tasks = pg_query($connection, "SELECT COUNT(*) FROM tasks WHERE stage = '1';");
                         while ($cnt = pg_fetch_assoc($no_started_tasks)){
                             $count_no_started = $cnt['count'];
@@ -59,22 +59,22 @@
                         while ($cnt = pg_fetch_assoc($end_tasks)){
                             $count_finished = $cnt['count'];
                         }
-                        echo ("<p style='white-space: pre-wrap; color:rgb(255, 255, 255);'>Не начато заданий: <b>".$count_no_started."</b>    Заданий в процессе: <b>".$count_processed."</b>    Завершено заданий: <b>".$count_finished."</b></p>");
+                        echo ("<p style='white-space: pre-wrap;'>Не начато заданий: <b>".$count_no_started."</b>    Заданий в процессе: <b>".$count_processed."</b>    Завершено заданий: <b>".$count_finished."</b></p>");
                         
                     ?>
                 </div>
                 <div style="float:right; padding-right: 15px;">
                     <form method="POST">
-                        <button type="button" name="createtask" id="createtask" class="btn btn-primary text-center" style="border-radius: 15px;">
+                        <button type="button" name="createtask" id="createtask" class="btn btn-primary text-center" style="border-radius: 30px;">
                             <a href="#modalcreatetasks" class="open_modal" style="color:white; text-decoration: none;"><b style="font-size: 15px;">Создать задачу</b></a>
                         </button>
-                        <button type="button" name="settings" id="settings" class="btn btn-primary text-center" style="border-radius: 15px;">
+                        <button type="button" name="settings" id="settings" class="btn btn-primary text-center" style="border-radius: 30px;">
                            <a href="#modalsettings" class="open_modal" style="color:white; text-decoration: none;"><b style="font-size: 15px;" id="usernamesettings"></b></a>
                         </button>
-                        <button type="button" name="usersetings" id="usersetings" class="btn btn-primary text-center" style="border-radius: 15px;">
+                        <button type="button" name="usersetings" id="usersetings" class="btn btn-primary text-center" style="border-radius: 30px;">
                             <a href="usersetings.html"  style="color:white; text-decoration: none;"><b style="font-size: 15px;">Пользователи</b></a>
                         </button>
-                        <button type="button" name="exit" id="exit" class="btn btn-primary text-center" style="border-radius: 15px;">
+                        <button type="button" name="exit" id="exit" class="btn btn-primary text-center" style="border-radius: 30px;">
                             <b>Выйти</b>
                         </button>
                     </form>
@@ -82,8 +82,8 @@
                 <br><br><br>
                 <div>
                     <table class="table table-bordered table-hover table-sm" id="tasktable">
-                        <thead style="background: rgb(247,243,195);
-                        background: linear-gradient(45deg, rgba(247,243,195,1) 0%, rgba(163,255,255,1) 50%, rgba(255,185,255,1) 100%);">
+                        <thead style="background: rgb(185,139,0);
+                        background: linear-gradient(90deg, #e6dada 0%, #5f9cac 100%);">
                             <tr>
                                 <th>#</th>
                                 <th>Тема</th>
@@ -221,7 +221,7 @@
                             }
                         ?>
                     </select></p>
-                    <button type="button" class="btn btn-primary text-center" style="border-radius: 15px;" id="savetask" name="savetask">Создать задачу</button> <!--обработчик с занесением с бд-->
+                    <button type="button" class="btn btn-primary text-center" style="border-radius: 30px;" id="savetask" name="savetask">Создать задачу</button> <!--обработчик с занесением с бд-->
                 </form>
             </div>
         </div>
@@ -265,7 +265,7 @@
                         }
                         echo ('</select></p>');
                     ?>
-                    <button type="button" class="btn btn-primary text-center" style="border-radius: 15px;" id="savesettings" name="savesettings">Сохранить</button> <!--обработчик с занесением с бд-->
+                    <button type="button" class="btn btn-primary text-center" style="border-radius: 30px;" id="savesettings" name="savesettings">Сохранить</button> <!--обработчик с занесением с бд-->
                 </form>
             </div>
         </div>
